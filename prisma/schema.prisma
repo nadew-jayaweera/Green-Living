@@ -1,0 +1,87 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id            String      @id @default(cuid())
+  name          String
+  email         String      @unique
+  password      String
+  image         String?
+  role          String      @default("USER") // USER | ADMIN
+  createdAt     DateTime    @default(now())
+  uploads       Upload[]
+  badges        UserBadge[]
+  forumPosts    ForumPost[]
+  comments      Comment[]
+  likes         Like[]
+}
+
+model Upload {
+  id          String   @id @default(cuid())
+  userId      String
+  imageUrl    String
+  location    String
+  description String
+  treeType    String
+  status      String   @default("APPROVED") // PENDING | APPROVED | REJECTED
+  createdAt   DateTime @default(now())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+}
+
+model Badge {
+  id          String      @id @default(cuid())
+  name        String      @unique
+  icon        String
+  description String
+  threshold   Int
+  users       UserBadge[]
+}
+
+model UserBadge {
+  id       String   @id @default(cuid())
+  userId   String
+  badgeId  String
+  earnedAt DateTime @default(now())
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, badgeId])
+}
+
+model ForumPost {
+  id        String    @id @default(cuid())
+  userId    String
+  title     String
+  content   String
+  category  String
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  comments  Comment[]
+  likes     Like[]
+}
+
+model Comment {
+  id        String    @id @default(cuid())
+  userId    String
+  postId    String
+  content   String
+  createdAt DateTime  @default(now())
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+}
+
+model Like {
+  id     String    @id @default(cuid())
+  userId String
+  postId String
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  post   ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, postId])
+}
