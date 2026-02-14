@@ -52,11 +52,14 @@ export async function GET() {
             orderBy: { createdAt: "desc" },
         });
 
+        const mainAdminEmail = process.env.MAIN_ADMIN_EMAIL || "";
+
         return NextResponse.json({
             stats: { totalUsers, totalUploads, pendingUploads, totalPosts, totalComments },
             recentUploads,
             recentPosts,
             allUsers,
+            mainAdminEmail,
         });
     } catch (error) {
         console.error("Admin stats error:", error);
@@ -104,10 +107,23 @@ export async function PUT(request: Request) {
             return NextResponse.json({ error: "Invalid request" }, { status: 400 });
         }
 
+        // Only the main admin can promote/demote users
+        const mainAdminEmail = process.env.MAIN_ADMIN_EMAIL || "";
+        const currentUserEmail = (session.user as { email?: string })?.email;
+        if (currentUserEmail !== mainAdminEmail) {
+            return NextResponse.json({ error: "Only the main admin can manage user roles" }, { status: 403 });
+        }
+
         // Prevent self-demotion
         const currentUser = (session.user as { id?: string });
         if (currentUser.id === userId) {
             return NextResponse.json({ error: "Cannot change your own role" }, { status: 400 });
+        }
+
+        // Prevent demoting the main admin
+        const targetUser = await prisma.user.findUnique({ where: { id: userId } });
+        if (targetUser?.email === mainAdminEmail) {
+            return NextResponse.json({ error: "Cannot change the main admin's role" }, { status: 400 });
         }
 
         const user = await prisma.user.update({
@@ -141,6 +157,12 @@ export async function DELETE(request: Request) {
             const currentUser = (session.user as { id?: string });
             if (currentUser.id === id) {
                 return NextResponse.json({ error: "Cannot delete yourself" }, { status: 400 });
+            }
+            // Prevent deleting the main admin
+            const mainAdminEmail = process.env.MAIN_ADMIN_EMAIL || "";
+            const targetUser = await prisma.user.findUnique({ where: { id } });
+            if (targetUser?.email === mainAdminEmail) {
+                return NextResponse.json({ error: "Cannot delete the main admin" }, { status: 400 });
             }
             await prisma.user.delete({ where: { id } });
         } else {

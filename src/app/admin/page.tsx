@@ -37,6 +37,7 @@ interface AdminData {
         createdAt: string;
         _count: { uploads: number; badges: number; forumPosts: number };
     }>;
+    mainAdminEmail: string;
 }
 
 export default function AdminPage() {
@@ -48,6 +49,8 @@ export default function AdminPage() {
     const [actionLoading, setActionLoading] = useState("");
 
     const userRole = (session?.user as { role?: string })?.role;
+    const userEmail = (session?.user as { email?: string })?.email;
+    const isMainAdmin = data?.mainAdminEmail ? userEmail === data.mainAdminEmail : false;
 
     useEffect(() => {
         if (status === "authenticated") {
@@ -177,13 +180,14 @@ export default function AdminPage() {
                             <tbody>
                                 {(activeTab === "overview" ? data.allUsers.slice(0, 5) : data.allUsers).map((user) => {
                                     const isCurrentUser = (session?.user as { email?: string })?.email === user.email;
+                                    const isUserMainAdmin = user.email === data.mainAdminEmail;
                                     return (
                                         <tr key={user.id} style={{ borderBottom: "1px solid rgba(82,183,136,0.05)" }}>
                                             <td style={{ padding: "12px 16px", fontSize: "0.9rem", fontWeight: 600, color: "#1a4d2e" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
                                                     <div style={{
                                                         width: "32px", height: "32px", borderRadius: "50%",
-                                                        background: "linear-gradient(135deg, #2d6a4f, #52b788)",
+                                                        background: isUserMainAdmin ? "linear-gradient(135deg, #dc2626, #f59e0b)" : "linear-gradient(135deg, #2d6a4f, #52b788)",
                                                         display: "flex", alignItems: "center", justifyContent: "center",
                                                         color: "white", fontSize: "0.8rem", fontWeight: 700,
                                                     }}>
@@ -191,6 +195,7 @@ export default function AdminPage() {
                                                     </div>
                                                     {user.name}
                                                     {isCurrentUser && <span style={{ fontSize: "0.7rem", color: "#6b7280" }}>(you)</span>}
+                                                    {isUserMainAdmin && <span style={{ fontSize: "0.65rem", padding: "2px 8px", borderRadius: "50px", background: "rgba(220,38,38,0.1)", color: "#dc2626", fontWeight: 700 }}>🔒 Main Admin</span>}
                                                 </div>
                                             </td>
                                             <td style={{ padding: "12px 16px", fontSize: "0.85rem", color: "#6b7280" }}>
@@ -228,28 +233,34 @@ export default function AdminPage() {
                                                 </div>
                                             </td>
                                             <td style={{ padding: "12px 16px" }}>
-                                                <div style={{ display: "flex", gap: "6px" }}>
-                                                    {!isCurrentUser && (
-                                                        <button onClick={() => toggleRole(user.id, user.role)}
-                                                            disabled={actionLoading === user.id}
-                                                            title={user.role === "ADMIN" ? "Demote to User" : "Promote to Admin"}
-                                                            style={{
-                                                                padding: "6px 12px", borderRadius: "8px", border: "none", cursor: "pointer",
-                                                                fontSize: "0.75rem", fontWeight: 600,
-                                                                background: user.role === "ADMIN" ? "rgba(245,158,11,0.1)" : "rgba(82,183,136,0.1)",
-                                                                color: user.role === "ADMIN" ? "#d97706" : "#2d6a4f",
-                                                                opacity: actionLoading === user.id ? 0.5 : 1,
-                                                            }}>
-                                                            {user.role === "ADMIN" ? "Demote" : "Promote"}
-                                                        </button>
-                                                    )}
-                                                    {!isCurrentUser && (
-                                                        <button onClick={() => deleteContent("user", user.id)}
-                                                            disabled={actionLoading === user.id}
-                                                            title="Delete User"
-                                                            style={{ padding: "6px 10px", borderRadius: "8px", border: "none", cursor: "pointer", background: "rgba(239,68,68,0.1)", color: "#dc2626" }}>
-                                                            <Trash2 size={14} />
-                                                        </button>
+                                                <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                                                    {isUserMainAdmin ? (
+                                                        <span style={{ fontSize: "0.75rem", color: "#6b7280", fontStyle: "italic" }}>Protected</span>
+                                                    ) : (
+                                                        <>
+                                                            {isMainAdmin && !isCurrentUser && (
+                                                                <button onClick={() => toggleRole(user.id, user.role)}
+                                                                    disabled={actionLoading === user.id}
+                                                                    title={user.role === "ADMIN" ? "Demote to User" : "Promote to Admin"}
+                                                                    style={{
+                                                                        padding: "6px 12px", borderRadius: "8px", border: "none", cursor: "pointer",
+                                                                        fontSize: "0.75rem", fontWeight: 600,
+                                                                        background: user.role === "ADMIN" ? "rgba(245,158,11,0.1)" : "rgba(82,183,136,0.1)",
+                                                                        color: user.role === "ADMIN" ? "#d97706" : "#2d6a4f",
+                                                                        opacity: actionLoading === user.id ? 0.5 : 1,
+                                                                    }}>
+                                                                    {user.role === "ADMIN" ? "Demote" : "Promote"}
+                                                                </button>
+                                                            )}
+                                                            {isMainAdmin && !isCurrentUser && (
+                                                                <button onClick={() => deleteContent("user", user.id)}
+                                                                    disabled={actionLoading === user.id}
+                                                                    title="Delete User"
+                                                                    style={{ padding: "6px 10px", borderRadius: "8px", border: "none", cursor: "pointer", background: "rgba(239,68,68,0.1)", color: "#dc2626" }}>
+                                                                    <Trash2 size={14} />
+                                                                </button>
+                                                            )}
+                                                        </>
                                                     )}
                                                 </div>
                                             </td>

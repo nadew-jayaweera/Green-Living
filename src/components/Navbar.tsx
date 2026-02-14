@@ -157,7 +157,7 @@ export default function Navbar() {
                                 <User size={18} /> {session.user.name}
                             </Link>
                             <button
-                                onClick={() => signOut()}
+                                onClick={() => signOut({ callbackUrl: "/login" })}
                                 className="btn-secondary"
                                 style={{ padding: "8px 18px", fontSize: "0.85rem" }}
                             >
@@ -254,7 +254,7 @@ export default function Navbar() {
                                     </Link>
                                 )}
                                 <button
-                                    onClick={() => { signOut(); setMenuOpen(false); }}
+                                    onClick={() => { signOut({ callbackUrl: "/login" }); setMenuOpen(false); }}
                                     style={{
                                         display: "flex",
                                         alignItems: "center",
