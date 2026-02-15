@@ -137,13 +137,13 @@ export default function HomePage() {
         {/* Decorative wave */}
         <div style={{ position: "absolute", bottom: "0", left: "0", right: "0", height: "80px", overflow: "hidden" }}>
           <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
-            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" fill="#f0fdf4" />
+            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" fill="var(--background)" />
           </svg>
         </div>
       </section>
 
       {/* ===== STATS SECTION ===== */}
-      <section style={{ padding: "100px 24px", background: "linear-gradient(135deg, #f0fdf4 0%, #f0f9ff 100%)", position: "relative" }}>
+      <section style={{ padding: "100px 24px", background: "var(--background)", position: "relative" }}>
         <div className="blob-shape" style={{ width: "500px", height: "500px", background: "rgba(254, 243, 199, 0.4)", top: "10%", left: "-10%" }} />
 
         <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative", zIndex: 1 }}>
@@ -154,8 +154,8 @@ export default function HomePage() {
 
           <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "32px" }}>
             {[
-              { icon: <TreePine size={48} />, value: treeCounter.count || stats.totalTrees, label: "Trees Planted", color: "#2d6a4f" },
-              { icon: <Users size={48} />, value: userCounter.count || stats.totalUsers, label: "Active Members", color: "#52b788" },
+              { icon: <TreePine size={48} />, value: treeCounter.count || stats.totalTrees, label: "Trees Planted", color: "var(--color-forest)" },
+              { icon: <Users size={48} />, value: userCounter.count || stats.totalUsers, label: "Active Members", color: "var(--color-leaf)" },
               { icon: <Camera size={48} />, value: recentUploads.length, label: "Recent Uploads", color: "#3b82f6" },
             ].map((stat, i) => (
               <div
@@ -176,11 +176,11 @@ export default function HomePage() {
                 {isLoading ? (
                   <div className="skeleton" style={{ width: "120px", height: "3.5rem", marginBottom: "8px" }} />
                 ) : (
-                  <div style={{ fontSize: "3.5rem", fontWeight: 900, color: "#1a4d2e", lineHeight: 1, marginBottom: "8px" }}>
+                  <div style={{ fontSize: "3.5rem", fontWeight: 900, color: "var(--color-forest)", lineHeight: 1, marginBottom: "8px" }}>
                     {stat.value}
                   </div>
                 )}
-                <div style={{ fontSize: "1.1rem", color: "#6b7280", fontWeight: 600 }}>{stat.label}</div>
+                <div style={{ fontSize: "1.1rem", color: "var(--text-secondary)", fontWeight: 600 }}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -208,7 +208,7 @@ export default function HomePage() {
               >
                 <div style={{
                   position: "absolute", top: "-20px", right: "-20px",
-                  fontSize: "8rem", fontWeight: 900, color: "rgba(0,0,0,0.03)", lineHeight: 1
+                  fontSize: "8rem", fontWeight: 900, color: "var(--step-number-color)", lineHeight: 1
                 }}>
                   {item.step}
                 </div>
@@ -216,14 +216,14 @@ export default function HomePage() {
                 <div style={{
                   display: "inline-flex", alignItems: "center", justifyContent: "center",
                   width: "64px", height: "64px", borderRadius: "16px",
-                  background: "linear-gradient(135deg, #2d6a4f, #52b788)",
+                  background: "linear-gradient(135deg, var(--gradient-start), var(--gradient-end))",
                   color: "white", marginBottom: "24px",
                   boxShadow: "0 8px 16px rgba(45, 106, 79, 0.2)"
                 }}>
                   {item.icon}
                 </div>
-                <h3 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1a4d2e", marginBottom: "12px" }}>{item.title}</h3>
-                <p style={{ color: "#6b7280", lineHeight: 1.7, fontSize: "1.05rem" }}>{item.desc}</p>
+                <h3 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--color-forest)", marginBottom: "12px" }}>{item.title}</h3>
+                <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "1.05rem" }}>{item.desc}</p>
               </div>
             ))}
           </div>
@@ -231,7 +231,7 @@ export default function HomePage() {
       </section>
 
       {/* ===== FEATURES SECTION ===== */}
-      <section style={{ padding: "100px 24px", background: "linear-gradient(135deg, #fef3c7 0%, #f0f9ff 100%)", position: "relative", overflow: "hidden" }}>
+      <section style={{ padding: "100px 24px", background: "var(--color-cream)", position: "relative", overflow: "hidden" }}>
         <div className="blob-shape" style={{ width: "600px", height: "600px", background: "rgba(186, 230, 253, 0.3)", top: "20%", right: "-10%" }} />
 
         <div style={{ maxWidth: "1100px", margin: "0 auto", position: "relative", zIndex: 1 }}>
@@ -253,15 +253,15 @@ export default function HomePage() {
                 style={{ padding: "32px 24px", display: "flex", gap: "20px", alignItems: "flex-start" }}
               >
                 <div style={{
-                  background: "linear-gradient(135deg, #2d6a4f, #52b788)", borderRadius: "14px",
+                  background: "linear-gradient(135deg, var(--gradient-start), var(--gradient-end))", borderRadius: "14px",
                   padding: "12px", color: "white", flexShrink: 0,
                   boxShadow: "0 4px 12px rgba(45, 106, 79, 0.2)"
                 }}>
                   {feat.icon}
                 </div>
                 <div>
-                  <h3 style={{ fontWeight: 700, color: "#1a4d2e", marginBottom: "8px", fontSize: "1.2rem" }}>{feat.title}</h3>
-                  <p style={{ color: "#6b7280", fontSize: "0.95rem", lineHeight: 1.6 }}>{feat.desc}</p>
+                  <h3 style={{ fontWeight: 700, color: "var(--color-forest)", marginBottom: "8px", fontSize: "1.2rem" }}>{feat.title}</h3>
+                  <p style={{ color: "var(--text-secondary)", fontSize: "0.95rem", lineHeight: 1.6 }}>{feat.desc}</p>
                 </div>
               </div>
             ))}

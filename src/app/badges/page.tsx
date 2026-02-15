@@ -64,8 +64,8 @@ export default function BadgesPage() {
                 {session?.user && (
                     <div className="glass-card" style={{ display: "inline-flex", alignItems: "center", gap: "12px", padding: "12px 28px", marginTop: "8px" }}>
                         <span style={{ fontSize: "1.5rem" }}>🌳</span>
-                        <span style={{ fontWeight: 700, color: "#1a4d2e", fontSize: "1.1rem" }}>
-                            Your Trees: <span style={{ color: "#52b788" }}>{treeCount}</span>
+                        <span style={{ fontWeight: 700, color: "var(--color-forest)", fontSize: "1.1rem" }}>
+                            Your Trees: <span style={{ color: "var(--color-leaf)" }}>{treeCount}</span>
                         </span>
                     </div>
                 )}
@@ -90,11 +90,11 @@ export default function BadgesPage() {
                                 <Lock size={20} style={{ color: "#9ca3af", marginBottom: "8px" }} />
                             )}
 
-                            <h3 style={{ fontSize: "1.2rem", fontWeight: 700, color: unlocked ? "#1a4d2e" : "#9ca3af", marginBottom: "6px" }}>
+                            <h3 style={{ fontSize: "1.2rem", fontWeight: 700, color: unlocked ? "var(--color-forest)" : "var(--text-secondary)", marginBottom: "6px" }}>
                                 {badge.name}
                             </h3>
 
-                            <p style={{ color: unlocked ? "#6b7280" : "#c4c4c4", fontSize: "0.9rem", marginBottom: "16px" }}>
+                            <p style={{ color: unlocked ? "var(--text-secondary)" : "var(--text-secondary)", fontSize: "0.9rem", marginBottom: "16px", opacity: unlocked ? 1 : 0.7 }}>
                                 {badge.description}
                             </p>
 
@@ -106,14 +106,15 @@ export default function BadgesPage() {
                                 <div style={{
                                     width: `${progress}%`, height: "100%",
                                     background: unlocked
-                                        ? "linear-gradient(90deg, #2d6a4f, #52b788)"
-                                        : "linear-gradient(90deg, #d1d5db, #9ca3af)",
+                                        ? "linear-gradient(90deg, var(--color-forest), var(--color-leaf))"
+                                        : "linear-gradient(90deg, var(--text-secondary), var(--text-secondary))",
                                     borderRadius: "50px",
                                     transition: "width 1s ease-out",
+                                    opacity: unlocked ? 1 : 0.5
                                 }} />
                             </div>
 
-                            <div style={{ fontSize: "0.8rem", color: unlocked ? "#52b788" : "#9ca3af", fontWeight: 600 }}>
+                            <div style={{ fontSize: "0.8rem", color: unlocked ? "var(--color-leaf)" : "var(--text-secondary)", fontWeight: 600 }}>
                                 {unlocked ? "✅ Unlocked!" : `${treeCount}/${badge.threshold} trees`}
                             </div>
                         </div>

@@ -216,23 +216,23 @@ export default function ProfilePage() {
                         disabled={isSaving}
                     />
 
-                    <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", marginBottom: "4px" }}>
+                    <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--color-forest)", marginBottom: "4px" }}>
                         {profileName || session.user?.name}
                     </h1>
-                    <p style={{ color: "#6b7280", marginBottom: "20px" }}>{session.user?.email}</p>
+                    <p style={{ color: "var(--text-secondary)", marginBottom: "20px" }}>{session.user?.email}</p>
 
                     <div style={{ display: "flex", justifyContent: "center", gap: "32px" }}>
                         <div style={{ textAlign: "center" }}>
-                            <div style={{ fontSize: "2rem", fontWeight: 900, color: "#52b788" }}>{treeCount}</div>
-                            <div style={{ fontSize: "0.85rem", color: "#6b7280", fontWeight: 500 }}>Trees Planted</div>
+                            <div style={{ fontSize: "2rem", fontWeight: 900, color: "var(--color-forest-light)" }}>{treeCount}</div>
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 500 }}>Trees Planted</div>
                         </div>
                         <div style={{ textAlign: "center" }}>
-                            <div style={{ fontSize: "2rem", fontWeight: 900, color: "#52b788" }}>{badges.length}</div>
-                            <div style={{ fontSize: "0.85rem", color: "#6b7280", fontWeight: 500 }}>Badges Earned</div>
+                            <div style={{ fontSize: "2rem", fontWeight: 900, color: "var(--color-forest-light)" }}>{badges.length}</div>
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 500 }}>Badges Earned</div>
                         </div>
                         <div style={{ textAlign: "center" }}>
-                            <div style={{ fontSize: "2rem", fontWeight: 900, color: "#52b788" }}>{posts.length}</div>
-                            <div style={{ fontSize: "0.85rem", color: "#6b7280", fontWeight: 500 }}>Forum Posts</div>
+                            <div style={{ fontSize: "2rem", fontWeight: 900, color: "var(--color-forest-light)" }}>{posts.length}</div>
+                            <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 500 }}>Forum Posts</div>
                         </div>
                     </div>
 
@@ -320,7 +320,7 @@ export default function ProfilePage() {
             {activeTab === "badges" && (
                 <div>
                     <div className="glass-card" style={{ padding: "32px", marginBottom: "32px" }}>
-                        <h3 style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1a4d2e", marginBottom: "24px", textAlign: "center" }}>
+                        <h3 style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--text-primary)", marginBottom: "24px", textAlign: "center" }}>
                             Next Milestone
                         </h3>
                         {(() => {
@@ -352,14 +352,14 @@ export default function ProfilePage() {
                                 <div>
                                     <div style={{ display: "flex", justifyContent: "space-between", alignItems: "flex-end", marginBottom: "12px" }}>
                                         <div>
-                                            <div style={{ fontSize: "0.9rem", color: "#6b7280", fontWeight: 600 }}>Current Progress</div>
-                                            <div style={{ fontSize: "1.8rem", fontWeight: 900, color: "#1a4d2e" }}>
-                                                {treeCount} <span style={{ fontSize: "1rem", color: "#9ca3af", fontWeight: 500 }}>/ {nextBadge.threshold} Trees</span>
+                                            <div style={{ fontSize: "0.9rem", color: "var(--text-secondary)", fontWeight: 600 }}>Current Progress</div>
+                                            <div style={{ fontSize: "1.8rem", fontWeight: 900, color: "var(--color-forest)" }}>
+                                                {treeCount} <span style={{ fontSize: "1rem", color: "var(--text-secondary)", fontWeight: 500 }}>/ {nextBadge.threshold} Trees</span>
                                             </div>
                                         </div>
                                         <div style={{ textAlign: "right" }}>
                                             <div style={{ fontSize: "2.5rem", lineHeight: 1 }}>{nextBadge.icon}</div>
-                                            <div style={{ fontSize: "0.85rem", color: "#2d6a4f", fontWeight: 700 }}>{nextBadge.name}</div>
+                                            <div style={{ fontSize: "0.85rem", color: "var(--color-forest)", fontWeight: 700 }}>{nextBadge.name}</div>
                                         </div>
                                     </div>
 
@@ -382,7 +382,7 @@ export default function ProfilePage() {
                                         </div>
                                     </div>
 
-                                    <p style={{ textAlign: "center", marginTop: "16px", color: "#6b7280", fontSize: "0.95rem" }}>
+                                    <p style={{ textAlign: "center", marginTop: "16px", color: "var(--text-secondary)", fontSize: "0.95rem" }}>
                                         Plant <strong>{treesNeeded} more {treesNeeded === 1 ? 'tree' : 'trees'}</strong> to unlock the <strong>{nextBadge.name}</strong> badge!
                                     </p>
                                 </div>
@@ -404,12 +404,12 @@ export default function ProfilePage() {
                                 <div key={badge.name} className="glass-card" style={{
                                     padding: "24px",
                                     textAlign: "center",
-                                    border: "2px solid rgba(82, 183, 136, 0.3)",
-                                    background: "rgba(255,255,255,0.7)"
+                                    border: "2px solid var(--input-border)",
+                                    background: "var(--card-bg)"
                                 }}>
                                     <div style={{ fontSize: "3rem", marginBottom: "12px", filter: "drop-shadow(0 4px 6px rgba(0,0,0,0.1))" }}>{badge.icon}</div>
-                                    <h3 style={{ fontWeight: 700, color: "#1a4d2e", marginBottom: "4px", fontSize: "1rem" }}>{badge.name}</h3>
-                                    <div style={{ fontSize: "0.75rem", color: "#52b788", fontWeight: 600 }}>
+                                    <h3 style={{ fontWeight: 700, color: "var(--text-primary)", marginBottom: "4px", fontSize: "1rem" }}>{badge.name}</h3>
+                                    <div style={{ fontSize: "0.75rem", color: "var(--color-forest)", fontWeight: 600 }}>
                                         {new Date(badge.earnedAt).toLocaleDateString()}
                                     </div>
                                 </div>
@@ -432,11 +432,11 @@ export default function ProfilePage() {
                                         textAlign: "center",
                                         opacity: 0.5,
                                         filter: "grayscale(1)",
-                                        border: "2px dashed #d1d5db"
+                                        border: "2px dashed var(--text-secondary)"
                                     }}>
                                         <div style={{ fontSize: "3rem", marginBottom: "12px" }}>{badge.icon}</div>
-                                        <h3 style={{ fontWeight: 700, color: "#6b7280", marginBottom: "4px", fontSize: "1rem" }}>{badge.name}</h3>
-                                        <div style={{ fontSize: "0.75rem", color: "#9ca3af" }}>
+                                        <h3 style={{ fontWeight: 700, color: "var(--text-secondary)", marginBottom: "4px", fontSize: "1rem" }}>{badge.name}</h3>
+                                        <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>
                                             Unlocks at {badge.threshold}
                                         </div>
                                     </div>

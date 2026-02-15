@@ -69,10 +69,10 @@ export default function ForumPage() {
             <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", flexWrap: "wrap", gap: "16px", marginBottom: "32px" }}>
                 <div>
                     <h1 className="section-title" style={{ textAlign: "left", marginBottom: "4px" }}>
-                        <MessageCircle size={32} style={{ display: "inline", marginRight: "10px", color: "#52b788" }} />
+                        <MessageCircle size={32} style={{ display: "inline", marginRight: "10px", color: "var(--color-forest)" }} />
                         Community Forum
                     </h1>
-                    <p style={{ color: "#6b7280" }}>Discuss sustainability topics with the community</p>
+                    <p style={{ color: "var(--text-secondary)" }}>Discuss sustainability topics with the community</p>
                 </div>
 
                 {session?.user && (
@@ -122,8 +122,8 @@ export default function ForumPage() {
             ) : posts.length === 0 ? (
                 <div className="glass-card" style={{ padding: "60px", textAlign: "center" }}>
                     <Search size={48} style={{ color: "#d1d5db", marginBottom: "16px" }} />
-                    <h3 style={{ color: "#6b7280", fontWeight: 600, marginBottom: "8px" }}>No posts yet</h3>
-                    <p style={{ color: "#9ca3af" }}>Be the first to start a discussion!</p>
+                    <h3 style={{ color: "var(--text-secondary)", fontWeight: 600, marginBottom: "8px" }}>No posts yet</h3>
+                    <p style={{ color: "var(--text-secondary)" }}>Be the first to start a discussion!</p>
                 </div>
             ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "16px" }}>
@@ -154,16 +154,16 @@ export default function ForumPage() {
                                         </span>
                                     </div>
 
-                                    <h3 style={{ fontWeight: 700, color: "#1a4d2e", fontSize: "1.1rem", marginBottom: "6px" }}>
+                                    <h3 style={{ fontWeight: 700, color: "var(--text-primary)", fontSize: "1.1rem", marginBottom: "6px" }}>
                                         {post.title}
                                     </h3>
 
-                                    <p style={{ color: "#6b7280", fontSize: "0.9rem", lineHeight: 1.6 }}>
+                                    <p style={{ color: "var(--text-secondary)", fontSize: "0.9rem", lineHeight: 1.6 }}>
                                         {post.content.slice(0, 150)}
                                         {post.content.length > 150 ? "..." : ""}
                                     </p>
 
-                                    <div style={{ display: "flex", gap: "16px", marginTop: "12px", fontSize: "0.85rem", color: "#9ca3af" }}>
+                                    <div style={{ display: "flex", gap: "16px", marginTop: "12px", fontSize: "0.85rem", color: "var(--text-secondary)" }}>
                                         <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
                                             <Heart size={14} /> {post._count.likes}
                                         </span>

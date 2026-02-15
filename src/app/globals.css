@@ -26,6 +26,46 @@
 :root {
   --background: #f0f9ff;
   --foreground: #1a2e1a;
+  --card-bg: rgba(255, 255, 255, 0.65);
+  --card-border: rgba(255, 255, 255, 0.6);
+  --sidebar-bg: rgba(230, 230, 230, 0.15);
+  --input-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 244, 0.9) 50%, rgba(240, 249, 255, 0.9) 100%);
+  --input-border: rgba(82, 183, 136, 0.3);
+  --text-primary: var(--foreground);
+  --text-secondary: #6b7280;
+  --glass-hover-bg: rgba(255, 255, 255, 0.85);
+  --input-focus-bg: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(240, 253, 244, 0.95) 50%, rgba(159, 230, 235, 0.1) 100%);
+  --input-focus-bg-solid: rgba(255, 255, 255, 1);
+  --pill-bg: rgba(240, 240, 240, 0.9);
+  --gradient-start: #1a4d2e;
+  --gradient-end: #40916c;
+  --step-number-color: rgba(0, 0, 0, 0.03);
+  --badge-bg: linear-gradient(135deg, rgba(240, 253, 244, 0.8) 0%, rgba(240, 249, 255, 0.8) 50%, rgba(245, 240, 255, 0.8) 100%);
+  --badge-bg-hover: linear-gradient(135deg, rgba(244, 253, 244, 0.95) 0%, rgba(240, 253, 244, 0.95) 50%, rgba(240, 249, 255, 0.95) 100%);
+}
+
+[data-theme='dark'] {
+  --background: #0f172a;
+  --foreground: #f1f5f9;
+  --card-bg: rgba(30, 41, 59, 0.7);
+  --card-border: rgba(255, 255, 255, 0.1);
+  --sidebar-bg: rgba(15, 23, 42, 0.4);
+  --input-bg: rgba(51, 65, 85, 0.5);
+  --input-border: rgba(82, 183, 136, 0.2);
+  --text-primary: #ffffff;
+  --text-secondary: #cbd5e1;
+  --color-cream: #1e293b;
+  --color-forest: #4ade80;
+  --color-forest-light: #22c55e;
+  --glass-hover-bg: rgba(30, 41, 59, 0.9);
+  --input-focus-bg: rgba(51, 65, 85, 0.8);
+  --input-focus-bg-solid: rgba(51, 65, 85, 0.9);
+  --pill-bg: rgba(51, 65, 85, 0.8);
+  --gradient-start: #4ade80;
+  --gradient-end: #86efac;
+  --step-number-color: rgba(255, 255, 255, 0.05);
+  --badge-bg: rgba(30, 41, 59, 0.6);
+  --badge-bg-hover: rgba(30, 41, 59, 0.8);
 }
 
 /* ===== Animations ===== */
@@ -161,15 +201,16 @@
 /* ===== Base styles ===== */
 
 body {
-  background-color: #f0f9ff;
+  background-color: var(--background);
   background-image:
     radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.08) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(82, 183, 136, 0.06) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 80%, rgba(139, 92, 246, 0.05) 0%, transparent 50%),
-    linear-gradient(135deg, rgba(240, 253, 244, 0.4) 0%, rgba(240, 249, 255, 0.4) 50%, rgba(245, 240, 255, 0.4) 100%);
-  color: var(--foreground);
+    linear-gradient(135deg, rgba(240, 253, 244, 0.2) 0%, rgba(240, 249, 255, 0.2) 50%, rgba(245, 240, 255, 0.2) 100%);
+  color: var(--text-primary);
   font-family: var(--font-sans), system-ui, -apple-system, sans-serif;
   min-height: 100vh;
+  transition: background-color 0.3s ease, color 0.3s ease;
 }
 
 /* ===== Leaf Background Pattern ===== */
@@ -191,26 +232,26 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .leaf-pattern {
 /* ===== Glass Card ===== */
 
 .glass-card {
-  background: rgba(255, 255, 255, 0.65);
+  background: var(--card-bg);
   backdrop-filter: blur(16px) saturate(180%);
   -webkit-backdrop-filter: blur(16px) saturate(180%);
-  border: 1px solid rgba(255, 255, 255, 0.6);
+  border: 1px solid var(--card-border);
   border-radius: 24px;
   box-shadow:
     0 4px 6px -1px rgba(0, 0, 0, 0.05),
     0 10px 15px -3px rgba(0, 0, 0, 0.05),
-    inset 0 0 20px rgba(255, 255, 255, 0.5);
+    inset 0 0 20px rgba(255, 255, 255, 0.05);
   transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .glass-card:hover {
   transform: translateY(-8px) scale(1.01);
-  background: rgba(255, 255, 255, 0.85);
+  background: var(--glass-hover-bg);
   box-shadow:
     0 20px 25px -5px rgba(0, 0, 0, 0.1),
     0 10px 10px -5px rgba(0, 0, 0, 0.04),
-    inset 0 0 20px rgba(255, 255, 255, 0.8);
-  border-color: rgba(255, 255, 255, 0.9);
+    inset 0 0 20px rgba(255, 255, 255, 0.1);
+  border-color: var(--card-border);
 }
 
 /* ===== Skeleton Loading ===== */
@@ -251,7 +292,7 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .leaf-pattern {
 
 /* Text Gradients */
 .text-gradient-forest {
-  background: linear-gradient(135deg, #1a4d2e 0%, #40916c 100%);
+  background: linear-gradient(135deg, var(--gradient-start) 0%, var(--gradient-end) 100%);
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
   background-clip: text;
@@ -334,19 +375,19 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .leaf-pattern {
 .form-input {
   width: 100%;
   padding: 14px 18px;
-  border: 2px solid rgba(82, 183, 136, 0.3);
+  border: 2px solid var(--input-border);
   border-radius: 14px;
-  background: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 244, 0.9) 50%, rgba(240, 249, 255, 0.9) 100%);
+  background: var(--input-bg);
   font-size: 1rem;
   transition: all 0.3s ease;
   outline: none;
-  color: var(--foreground);
+  color: var(--text-primary);
 }
 
 .form-input:focus {
   border-color: var(--color-leaf);
   box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.15);
-  background: linear-gradient(135deg, rgba(255, 255, 255, 1) 0%, rgba(240, 253, 244, 0.95) 50%, rgba(159, 230, 235, 0.1) 100%);
+  background: var(--input-focus-bg);
 }
 
 .form-input::placeholder {
@@ -381,7 +422,7 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .leaf-pattern {
 .form-select:focus {
   border-color: var(--color-leaf);
   box-shadow: 0 0 0 4px rgba(82, 183, 136, 0.15);
-  background-color: rgba(255, 255, 255, 1);
+  background-color: var(--input-focus-bg-solid);
 }
 
 /* ===== Hero Section ===== */
@@ -443,7 +484,7 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .site-footer {
 .badge-card {
   text-align: center;
   padding: 2rem;
-  background: linear-gradient(135deg, rgba(240, 253, 244, 0.8) 0%, rgba(240, 249, 255, 0.8) 50%, rgba(245, 240, 255, 0.8) 100%);
+  background: var(--badge-bg);
   backdrop-filter: blur(12px);
   border-radius: 24px;
   border: 2px solid rgba(82, 183, 136, 0.2);
@@ -454,7 +495,7 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .site-footer {
   transform: translateY(-6px) scale(1.02);
   box-shadow: 0 20px 60px rgba(82, 183, 136, 0.2);
   border-color: var(--color-leaf);
-  background: linear-gradient(135deg, rgba(244, 253, 244, 0.95) 0%, rgba(240, 253, 244, 0.95) 50%, rgba(240, 249, 255, 0.95) 100%);
+  background: var(--badge-bg-hover);
 }
 
 .badge-card.locked {
@@ -503,7 +544,7 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .site-footer {
   cursor: pointer;
   transition: all 0.3s ease;
   border: 2px solid rgba(82, 183, 136, 0.2);
-  background: rgba(240, 240, 240, 0.9);
+  background: var(--pill-bg);
   color: var(--color-forest);
 }
 
@@ -676,7 +717,7 @@ body:has(.no-sidebar) .admin-content {
   left: 12px;
   height: calc(100vh - 24px);
   width: 280px;
-  background: rgba(230, 230, 230, 0.15);
+  background: var(--sidebar-bg);
   backdrop-filter: blur(10px);
   border: 1px solid rgba(200, 200, 200, 0.25);
   display: flex;
@@ -719,6 +760,23 @@ body:has(.no-sidebar) .admin-content {
   pointer-events: none;
 }
 
+.admin-sidebar-collapsed .sidebar-nav-item {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.admin-sidebar-collapsed .sidebar-logo {
+  justify-content: center;
+  padding-left: 0;
+  padding-right: 0;
+}
+
+.admin-sidebar-collapsed .sidebar-profile {
+  justify-content: center;
+  padding: 8px;
+}
+
 /* Sidebar Logo */
 .sidebar-logo {
   display: flex;
@@ -743,7 +801,7 @@ body:has(.no-sidebar) .admin-content {
 .sidebar-logo-text {
   font-weight: 900;
   font-size: 1.25rem;
-  color: #000000;
+  color: var(--text-primary);
   white-space: nowrap;
   opacity: 1;
   transition: opacity 0.2s ease;
@@ -766,7 +824,7 @@ body:has(.no-sidebar) .admin-content {
   border: none;
   background: transparent;
   cursor: pointer;
-  color: #000000;
+  color: var(--text-primary);
   font-size: 0.925rem;
   font-weight: 700;
   transition: all 0.2s ease;
@@ -778,12 +836,12 @@ body:has(.no-sidebar) .admin-content {
 
 .sidebar-nav-item:hover {
   background: rgba(82, 183, 136, 0.08);
-  color: #000000;
+  color: var(--color-forest);
 }
 
 .sidebar-nav-item-active {
   background: rgba(82, 183, 136, 0.12);
-  color: #000000;
+  color: var(--color-forest);
   font-weight: 700;
   box-shadow: 0 2px 8px rgba(82, 183, 136, 0.1);
 }
@@ -836,7 +894,7 @@ body:has(.no-sidebar) .admin-content {
 
 /* Bottom Section */
 .sidebar-bottom {
-  border-top: 1px solid rgba(0, 0, 0, 0.06);
+  border-top: 1px solid var(--card-border);
   padding-top: 16px;
   margin-top: auto;
   display: flex;
@@ -942,7 +1000,7 @@ body:has(.no-sidebar) .admin-content {
 .sidebar-profile-name {
   font-weight: 700;
   font-size: 0.9rem;
-  color: #000000;
+  color: var(--text-primary);
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -950,7 +1008,7 @@ body:has(.no-sidebar) .admin-content {
 
 .sidebar-profile-email {
   font-size: 0.75rem;
-  color: #4b5563;
+  color: var(--text-secondary);
   font-weight: 600;
   white-space: nowrap;
   overflow: hidden;
@@ -971,8 +1029,8 @@ body:has(.no-sidebar) .admin-content {
 }
 
 .sidebar-profile-more:hover {
-  background: rgba(0, 0, 0, 0.05);
-  color: #6b7280;
+  background: var(--glass-hover-bg);
+  color: var(--color-forest);
 }
 
 /* Collapse Button */
@@ -984,14 +1042,14 @@ body:has(.no-sidebar) .admin-content {
   width: 28px;
   height: 28px;
   border-radius: 50%;
-  background: #f0f0f0;
-  border: 1px solid rgba(0, 0, 0, 0.08);
+  background: var(--card-bg);
+  border: 1px solid var(--card-border);
   display: flex;
   align-items: center;
   justify-content: center;
   cursor: pointer;
   box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
-  color: #6b7280;
+  color: var(--text-secondary);
   z-index: 10;
   transition: all 0.2s ease;
 }

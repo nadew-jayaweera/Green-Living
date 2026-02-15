@@ -17,12 +17,17 @@ import {
     LogOut,
     Settings,
     MoreHorizontal,
+    Sun,
+    Moon,
+    Image,
 } from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 export default function Sidebar() {
     const { data: session } = useSession();
     const pathname = usePathname();
     const [collapsed, setCollapsed] = useState(true);
+    const { theme, toggleTheme } = useTheme();
 
     const userRole = (session?.user as { role?: string })?.role;
     const userName = session?.user?.name || "Guest";
@@ -30,7 +35,7 @@ export default function Sidebar() {
 
     const navItems = [
         { href: "/", label: "Home", icon: <TreePine size={20} /> },
-        { href: "/upload", label: "Upload", icon: <Upload size={20} /> },
+        { href: "/feed", label: "Feed", icon: <Image size={20} /> },
         { href: "/badges", label: "Badges", icon: <Award size={20} /> },
         { href: "/forum", label: "Forum", icon: <MessageCircle size={20} /> },
         { href: "/leaderboard", label: "Leaderboard", icon: <Trophy size={20} /> },
@@ -89,16 +94,19 @@ export default function Sidebar() {
 
             {/* Bottom Section */}
             <div className="sidebar-bottom">
-                {/* Settings Link */}
-                <Link
-                    href="/profile"
+                {/* Theme Toggle */}
+                <button
+                    onClick={toggleTheme}
                     className="sidebar-nav-item"
-                    title={collapsed ? "Settings" : undefined}
-                    style={{ textDecoration: "none" }}
+                    title={collapsed ? (theme === "light" ? "Dark Mode" : "Light Mode") : undefined}
                 >
-                    <span className="sidebar-nav-icon"><Settings size={20} /></span>
-                    {!collapsed && <span className="sidebar-nav-label">Settings</span>}
-                </Link>
+                    <span className="sidebar-nav-icon">
+                        {theme === "light" ? <Moon size={20} /> : <Sun size={20} />}
+                    </span>
+                    {!collapsed && <span className="sidebar-nav-label">{theme === "light" ? "Dark Mode" : "Light Mode"}</span>}
+                </button>
+
+
 
                 {/* User Profile / Auth */}
                 {session?.user ? (

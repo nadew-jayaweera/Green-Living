@@ -3,8 +3,10 @@ import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
 import { ToastProvider } from "@/contexts/ToastContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -35,20 +37,38 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const savedTheme = localStorage.getItem('theme');
+                  const theme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch (e) {}
+              })()
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
         <SessionProvider>
-          <ToastProvider>
-            <Sidebar />
-            <div className="admin-content" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-              <main className="leaf-pattern" style={{ flex: 1 }}>
-                {children}
-              </main>
-              <Footer />
-            </div>
-          </ToastProvider>
+          <ThemeProvider>
+            <ToastProvider>
+              <Sidebar />
+              <div className="admin-content" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                <main className="leaf-pattern" style={{ flex: 1 }}>
+                  {children}
+                </main>
+                <Footer />
+              </div>
+              <BackToTop />
+            </ToastProvider>
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>

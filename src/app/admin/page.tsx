@@ -137,10 +137,10 @@ export default function AdminPage() {
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 24px 80px" }}>
             {/* Page Header */}
             <div style={{ marginBottom: "32px" }}>
-                <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", margin: 0 }}>
+                <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--text-primary)", margin: 0 }}>
                     Admin Panel
                 </h1>
-                <p style={{ color: "#6b7280", margin: "4px 0 0" }}>
+                <p style={{ color: "var(--text-secondary)", margin: "4px 0 0" }}>
                     Manage platform content and users
                 </p>
             </div>
@@ -177,8 +177,8 @@ export default function AdminPage() {
                         <div key={i} className="glass-card" style={{ padding: "20px", display: "flex", alignItems: "center", gap: "16px" }}>
                             <div style={{ color: stat.color }}>{stat.icon}</div>
                             <div>
-                                <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "#1a4d2e" }}>{stat.value}</div>
-                                <div style={{ fontSize: "0.8rem", color: "#6b7280" }}>{stat.label}</div>
+                                <div style={{ fontSize: "1.5rem", fontWeight: 800, color: "var(--text-primary)" }}>{stat.value}</div>
+                                <div style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>{stat.label}</div>
                             </div>
                         </div>
                     ))}
@@ -194,10 +194,10 @@ export default function AdminPage() {
                                 <UserCog size={24} />
                             </div>
                             <div>
-                                <h2 style={{ fontWeight: 700, color: "#1a4d2e", margin: 0 }}>
+                                <h2 style={{ fontWeight: 700, color: "var(--text-primary)", margin: 0 }}>
                                     {activeTab === "overview" ? "Recent Users" : "Registered Users"}
                                 </h2>
-                                <p style={{ fontSize: "0.85rem", color: "#6b7280", margin: 0 }}>
+                                <p style={{ fontSize: "0.85rem", color: "var(--text-secondary)", margin: 0 }}>
                                     {activeTab === "overview" ? "Newest members of the community" : `Manage all ${data.allUsers.length} users`}
                                 </p>
                             </div>
@@ -223,7 +223,7 @@ export default function AdminPage() {
                             <thead>
                                 <tr>
                                     {["Name", "Contact", "Role", "Uploads", "Badges", "Posts", "Joined", "Actions"].map((h) => (
-                                        <th key={h} style={{ textAlign: "left", padding: "0 16px", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "#6b7280", fontWeight: 700 }}>{h}</th>
+                                        <th key={h} style={{ textAlign: "left", padding: "0 16px", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "var(--text-secondary)", fontWeight: 700 }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
@@ -232,8 +232,8 @@ export default function AdminPage() {
                                     const isCurrentUser = (session?.user as { email?: string })?.email === user.email;
                                     const isUserMainAdmin = user.email === data.mainAdminEmail;
                                     return (
-                                        <tr key={user.id} style={{ transition: "all 0.2s ease" }} className="hover:bg-green-50/50">
-                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", borderTopLeftRadius: "12px", borderBottomLeftRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                        <tr key={user.id} style={{ transition: "all 0.2s ease" }} className="hover-bg-secondary">
+                                            <td style={{ padding: "12px 16px", background: "var(--bg-secondary)", borderTopLeftRadius: "12px", borderBottomLeftRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                                     <div style={{
                                                         width: "36px", height: "36px", borderRadius: "10px",
@@ -245,18 +245,18 @@ export default function AdminPage() {
                                                         {user.name.charAt(0).toUpperCase()}
                                                     </div>
                                                     <div>
-                                                        <div style={{ fontWeight: 600, color: "#1a4d2e", fontSize: "0.95rem" }}>{user.name}</div>
-                                                        {isCurrentUser && <span style={{ fontSize: "0.7rem", color: "#6b7280", display: "block" }}>(You)</span>}
+                                                        <div style={{ fontWeight: 600, color: "var(--text-primary)", fontSize: "0.95rem" }}>{user.name}</div>
+                                                        {isCurrentUser && <span style={{ fontSize: "0.7rem", color: "var(--text-secondary)", display: "block" }}>(You)</span>}
                                                         {isUserMainAdmin && <span style={{ fontSize: "0.65rem", padding: "2px 6px", borderRadius: "4px", background: "rgba(220,38,38,0.1)", color: "#dc2626", fontWeight: 700 }}>Main Admin</span>}
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
-                                                <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#4b5563", fontSize: "0.9rem" }}>
+                                            <td style={{ padding: "12px 16px", background: "var(--bg-secondary)", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
                                                     <Mail size={14} /> {user.email}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "var(--bg-secondary)", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <span style={{
                                                     padding: "4px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.02em",
                                                     background: user.role === "ADMIN" ? "rgba(220,38,38,0.1)" : "rgba(82,183,136,0.15)",
@@ -266,30 +266,30 @@ export default function AdminPage() {
                                                     {user.role}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
-                                                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#2d6a4f" }}>
+                                            <td style={{ padding: "12px 16px", background: "var(--bg-secondary)", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "var(--color-forest)" }}>
                                                     <div style={{ background: "rgba(82,183,136,0.1)", padding: "4px", borderRadius: "50%" }}><TreePine size={14} /></div>
                                                     {user._count.uploads}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "var(--bg-secondary)", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#d97706" }}>
                                                     <div style={{ background: "rgba(245,158,11,0.1)", padding: "4px", borderRadius: "50%" }}><Award size={14} /></div>
                                                     {user._count.badges}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "var(--bg-secondary)", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#0284c7" }}>
                                                     <div style={{ background: "rgba(14,165,233,0.1)", padding: "4px", borderRadius: "50%" }}><MessageCircle size={14} /></div>
                                                     {user._count.forumPosts}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
-                                                <div style={{ color: "#6b7280", fontSize: "0.85rem" }}>
+                                            <td style={{ padding: "12px 16px", background: "var(--bg-secondary)", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ color: "var(--text-secondary)", fontSize: "0.85rem" }}>
                                                     {formatDate(user.createdAt, { month: "short", day: "numeric", year: "numeric" })}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", borderTopRightRadius: "12px", borderBottomRightRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "var(--bg-secondary)", borderTopRightRadius: "12px", borderBottomRightRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
                                                     {isUserMainAdmin ? (
                                                         <span style={{ fontSize: "0.75rem", color: "#6b7280", fontStyle: "italic", fontWeight: 500 }}>Protected</span>
@@ -342,24 +342,24 @@ export default function AdminPage() {
             {/* Uploads Management */}
             {(activeTab === "overview" || activeTab === "uploads") && data && (
                 <div className="glass-card" style={{ padding: "24px", marginBottom: "24px" }}>
-                    <h2 style={{ fontWeight: 700, color: "#1a4d2e", marginBottom: "16px" }}>
+                    <h2 style={{ fontWeight: 700, color: "var(--text-primary)", marginBottom: "16px" }}>
                         {activeTab === "overview" ? "Recent Uploads" : "All Uploads"}
                     </h2>
                     <div style={{ overflowX: "auto" }}>
                         <table style={{ width: "100%", borderCollapse: "collapse" }}>
                             <thead>
-                                <tr style={{ borderBottom: "2px solid rgba(82,183,136,0.1)" }}>
+                                <tr style={{ borderBottom: "2px solid var(--input-border)" }}>
                                     {["User", "Tree Type", "Location", "Status", "Date", "Actions"].map((h) => (
-                                        <th key={h} style={{ textAlign: "left", padding: "12px 16px", fontSize: "0.85rem", color: "#6b7280", fontWeight: 600 }}>{h}</th>
+                                        <th key={h} style={{ textAlign: "left", padding: "12px 16px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 600 }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
                             <tbody>
                                 {data.recentUploads.map((upload) => (
-                                    <tr key={upload.id} style={{ borderBottom: "1px solid rgba(82,183,136,0.05)" }}>
-                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem" }}>{upload.user.name}</td>
-                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem" }}>{upload.treeType}</td>
-                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem" }}>{upload.location}</td>
+                                    <tr key={upload.id} style={{ borderBottom: "1px solid var(--input-border)" }}>
+                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem", color: "var(--text-primary)" }}>{upload.user.name}</td>
+                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem", color: "var(--text-primary)" }}>{upload.treeType}</td>
+                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem", color: "var(--text-primary)" }}>{upload.location}</td>
                                         <td style={{ padding: "12px 16px" }}>
                                             <span style={{
                                                 padding: "4px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: 600,
@@ -369,7 +369,7 @@ export default function AdminPage() {
                                                 {upload.status}
                                             </span>
                                         </td>
-                                        <td style={{ padding: "12px 16px", fontSize: "0.8rem", color: "#6b7280" }}>
+                                        <td style={{ padding: "12px 16px", fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                                             {formatDate(upload.createdAt)}
                                         </td>
                                         <td style={{ padding: "12px 16px" }}>
@@ -411,25 +411,25 @@ export default function AdminPage() {
             {/* Posts Management */}
             {(activeTab === "overview" || activeTab === "posts") && data && (
                 <div className="glass-card" style={{ padding: "24px" }}>
-                    <h2 style={{ fontWeight: 700, color: "#1a4d2e", marginBottom: "16px" }}>
+                    <h2 style={{ fontWeight: 700, color: "var(--text-primary)", marginBottom: "16px" }}>
                         {activeTab === "overview" ? "Recent Posts" : "All Posts"}
                     </h2>
                     <div style={{ overflowX: "auto" }}>
                         <table style={{ width: "100%", borderCollapse: "collapse" }}>
                             <thead>
-                                <tr style={{ borderBottom: "2px solid rgba(82,183,136,0.1)" }}>
+                                <tr style={{ borderBottom: "2px solid var(--input-border)" }}>
                                     {["User", "Title", "Category", "Date", "Actions"].map((h) => (
-                                        <th key={h} style={{ textAlign: "left", padding: "12px 16px", fontSize: "0.85rem", color: "#6b7280", fontWeight: 600 }}>{h}</th>
+                                        <th key={h} style={{ textAlign: "left", padding: "12px 16px", fontSize: "0.85rem", color: "var(--text-secondary)", fontWeight: 600 }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
                             <tbody>
                                 {data.recentPosts.map((post) => (
-                                    <tr key={post.id} style={{ borderBottom: "1px solid rgba(82,183,136,0.05)" }}>
-                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem" }}>{post.user.name}</td>
-                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem", fontWeight: 600 }}>{post.title}</td>
-                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem" }}>{post.category}</td>
-                                        <td style={{ padding: "12px 16px", fontSize: "0.8rem", color: "#6b7280" }}>
+                                    <tr key={post.id} style={{ borderBottom: "1px solid var(--input-border)" }}>
+                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem", color: "var(--text-primary)" }}>{post.user.name}</td>
+                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem", fontWeight: 600, color: "var(--text-primary)" }}>{post.title}</td>
+                                        <td style={{ padding: "12px 16px", fontSize: "0.9rem", color: "var(--text-primary)" }}>{post.category}</td>
+                                        <td style={{ padding: "12px 16px", fontSize: "0.8rem", color: "var(--text-secondary)" }}>
                                             {new Date(post.createdAt).toLocaleDateString()}
                                         </td>
                                         <td style={{ padding: "12px 16px" }}>
@@ -456,13 +456,13 @@ export default function AdminPage() {
                 }}>
                     <div className="glass-card" style={{
                         maxWidth: "600px", width: "100%", padding: "24px",
-                        background: "white", maxHeight: "90vh", overflowY: "auto",
+                        background: "var(--card-bg)", maxHeight: "90vh", overflowY: "auto",
                     }}>
                         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
-                            <h2 style={{ fontWeight: 700, color: "#1a4d2e", margin: 0 }}>Review Upload</h2>
+                            <h2 style={{ fontWeight: 700, color: "var(--text-primary)", margin: 0 }}>Review Upload</h2>
                             <button onClick={() => setSelectedUpload(null)} style={{
                                 background: "none", border: "none", cursor: "pointer",
-                                fontSize: "24px", color: "#6b7280", padding: "0",
+                                fontSize: "24px", color: "var(--text-secondary)", padding: "0",
                             }}>
                                 ×
                             </button>
@@ -470,7 +470,7 @@ export default function AdminPage() {
 
                         <div style={{
                             width: "100%", height: "350px", borderRadius: "12px",
-                            overflow: "hidden", marginBottom: "20px", background: "#f3f4f6",
+                            overflow: "hidden", marginBottom: "20px", background: "var(--bg-secondary)",
                         }}>
                             <img src={selectedUpload.imageUrl} alt={selectedUpload.treeType}
                                 style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -478,19 +478,19 @@ export default function AdminPage() {
 
                         <div style={{ marginBottom: "20px" }}>
                             <div style={{ marginBottom: "12px" }}>
-                                <label style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Tree Type</label>
-                                <div style={{ fontSize: "0.95rem", color: "#1a4d2e", fontWeight: 600 }}>{selectedUpload.treeType}</div>
+                                <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: 600 }}>Tree Type</label>
+                                <div style={{ fontSize: "0.95rem", color: "var(--text-primary)", fontWeight: 600 }}>{selectedUpload.treeType}</div>
                             </div>
                             <div style={{ marginBottom: "12px" }}>
-                                <label style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Location</label>
-                                <div style={{ fontSize: "0.95rem", color: "#1a4d2e" }}>📍 {selectedUpload.location}</div>
+                                <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: 600 }}>Location</label>
+                                <div style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}>📍 {selectedUpload.location}</div>
                             </div>
                             <div style={{ marginBottom: "12px" }}>
-                                <label style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Uploaded by</label>
-                                <div style={{ fontSize: "0.95rem", color: "#1a4d2e" }}>{selectedUpload.user.name} ({selectedUpload.user.email})</div>
+                                <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: 600 }}>Uploaded by</label>
+                                <div style={{ fontSize: "0.95rem", color: "var(--text-primary)" }}>{selectedUpload.user.name} ({selectedUpload.user.email})</div>
                             </div>
                             <div>
-                                <label style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Status</label>
+                                <label style={{ fontSize: "0.8rem", color: "var(--text-secondary)", fontWeight: 600 }}>Status</label>
                                 <span style={{
                                     padding: "4px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: 600, display: "inline-block",
                                     background: selectedUpload.status === "APPROVED" ? "rgba(82,183,136,0.1)" : selectedUpload.status === "REJECTED" ? "rgba(239,68,68,0.1)" : "rgba(245,158,11,0.1)",
@@ -528,8 +528,8 @@ export default function AdminPage() {
                             )}
                             <button onClick={() => setSelectedUpload(null)}
                                 style={{
-                                    flex: 1, padding: "12px", border: "1px solid #e5e7eb", borderRadius: "8px",
-                                    background: "white", color: "#6b7280", cursor: "pointer", fontWeight: 600,
+                                    flex: 1, padding: "12px", border: "1px solid var(--input-border)", borderRadius: "8px",
+                                    background: "var(--card-bg)", color: "var(--text-secondary)", cursor: "pointer", fontWeight: 600,
                                 }}>
                                 Close
                             </button>
