@@ -29,38 +29,49 @@ export default function BackToTop() {
     if (!isVisible) return null;
 
     return (
-        <button
-            onClick={scrollToTop}
-            className="back-to-top"
-            aria-label="Back to Top"
-            style={{
-                position: "fixed",
-                bottom: "24px",
-                right: "24px",
-                background: "linear-gradient(135deg, #2d6a4f, #52b788)",
-                color: "white",
-                border: "none",
-                borderRadius: "50%",
-                width: "48px",
-                height: "48px",
-                display: "flex",
-                alignItems: "center",
-                justifyContent: "center",
-                cursor: "pointer",
-                boxShadow: "0 4px 12px rgba(45, 106, 79, 0.3)",
-                zIndex: 1000,
-                transition: "all 0.3s ease",
-            }}
-            onMouseOver={(e) => {
-                e.currentTarget.style.transform = "translateY(-4px)";
-                e.currentTarget.style.boxShadow = "0 8px 16px rgba(45, 106, 79, 0.4)";
-            }}
-            onMouseOut={(e) => {
-                e.currentTarget.style.transform = "translateY(0)";
-                e.currentTarget.style.boxShadow = "0 4px 12px rgba(45, 106, 79, 0.3)";
-            }}
-        >
-            <ArrowUp size={24} strokeWidth={3} />
-        </button>
+        <>
+            <style jsx>{`
+                .back-to-top {
+                    bottom: 20px;
+                }
+                @media (max-width: 768px) {
+                    .back-to-top {
+                        bottom: 82px !important;
+                    }
+                }
+            `}</style>
+            <button
+                onClick={scrollToTop}
+                className="back-to-top"
+                aria-label="Back to Top"
+                style={{
+                    position: "fixed",
+                    right: "24px",
+                    background: "linear-gradient(135deg, #2d6a4f, #52b788)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "50%",
+                    width: "48px",
+                    height: "48px",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    boxShadow: "0 4px 12px rgba(45, 106, 79, 0.3)",
+                    zIndex: 1000,
+                    transition: "all 0.3s ease",
+                }}
+                onMouseOver={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = "0 8px 16px rgba(45, 106, 79, 0.4)";
+                }}
+                onMouseOut={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "0 4px 12px rgba(45, 106, 79, 0.3)";
+                }}
+            >
+                <ArrowUp size={24} strokeWidth={3} />
+            </button>
+        </>
     );
 }

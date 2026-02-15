@@ -187,106 +187,108 @@ export default function UploadPage() {
     };
 
     return (
-        <div style={{ maxWidth: "700px", margin: "0 auto", padding: "40px 24px 80px" }}>
-            <div style={{ textAlign: "center", marginBottom: "40px" }}>
-                <h1 className="section-title" style={{ marginBottom: "8px" }}>
-                    <Sprout size={32} style={{ display: "inline", marginRight: "10px", color: "#52b788" }} />
-                    Upload Your Tree
-                </h1>
-                <p className="section-subtitle" style={{ marginBottom: "0" }}>Share your contribution with the community</p>
-            </div>
+        <div className="page-container">
+            <div style={{ width: "100%", maxWidth: "700px", margin: "0 auto" }}>
+                <div style={{ textAlign: "center", marginBottom: "40px" }}>
+                    <h1 className="section-title" style={{ marginBottom: "8px" }}>
+                        <Sprout size={32} style={{ display: "inline", marginRight: "10px", color: "#52b788" }} />
+                        Upload Your Tree
+                    </h1>
+                    <p className="section-subtitle" style={{ marginBottom: "0" }}>Share your contribution with the community</p>
+                </div>
 
-            {/* Upload Form */}
-            <div className="glass-card animate-fade-in-up" style={{ padding: "36px" }}>
-                <form onSubmit={handleSubmit}>
-                    {/* Image Upload */}
-                    <div style={{ marginBottom: "24px" }}>
-                        <label className="form-label"><Image size={14} style={{ display: "inline", marginRight: "6px" }} />Tree Photo</label>
-                        <div
-                            onClick={() => fileInputRef.current?.click()}
-                            onDragOver={handleDragOver}
-                            onDragLeave={handleDragLeave}
-                            onDrop={handleDrop}
-                            style={{
-                                border: `2px dashed ${isDragging ? "var(--color-forest)" : "var(--input-border)"}`,
-                                borderRadius: "16px",
-                                padding: preview ? "0" : "48px 24px",
-                                textAlign: "center",
-                                cursor: "pointer",
-                                transition: "all 0.3s ease",
-                                overflow: "hidden",
-                                background: isDragging
-                                    ? "rgba(74, 222, 128, 0.1)"
-                                    : (preview ? "transparent" : "var(--card-bg)"),
-                                transform: isDragging ? "scale(1.02)" : "scale(1)",
-                            }}
-                        >
-                            {preview ? (
-                                <img src={preview} alt="Preview" style={{ width: "100%", maxHeight: "300px", objectFit: "cover", borderRadius: "14px" }} />
-                            ) : (
-                                <>
-                                    <Upload size={40} style={{ color: isDragging ? "var(--color-forest)" : "var(--color-forest-light)", marginBottom: "12px", display: "block", margin: "0 auto 12px", transform: isDragging ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }} />
-                                    <p style={{ color: isDragging ? "var(--color-forest)" : "var(--text-secondary)", fontWeight: 600 }}>
-                                        {isDragging ? "Drop your tree here! 🌳" : "Click or Drag & Drop to upload"}
-                                    </p>
-                                    <p style={{ color: "#9ca3af", fontSize: "0.85rem", marginTop: "4px" }}>Max 10MB, JPG/PNG (Auto-compressed)</p>
-                                </>
-                            )}
-                        </div>
-                        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
-                    </div>
-
-                    {/* Tree Type */}
-                    <div style={{ marginBottom: "20px" }}>
-                        <label className="form-label"><TreePine size={14} style={{ display: "inline", marginRight: "6px" }} />Tree Type</label>
-                        <select className="form-select" value={treeType} onChange={(e) => setTreeType(e.target.value)} required>
-                            <option value="">Select tree type...</option>
-                            {TREE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
-                        </select>
-                    </div>
-
-                    {/* Location */}
-                    <div style={{ marginBottom: "20px" }}>
-                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                            <label className="form-label" style={{ marginBottom: 0 }}>
-                                <MapPin size={14} style={{ display: "inline", marginRight: "6px" }} />Location
-                            </label>
-                            <button
-                                type="button"
-                                onClick={handleGetLocation}
-                                disabled={locationLoading}
+                {/* Upload Form */}
+                <div className="glass-card animate-fade-in-up" style={{ padding: "36px" }}>
+                    <form onSubmit={handleSubmit}>
+                        {/* Image Upload */}
+                        <div style={{ marginBottom: "24px" }}>
+                            <label className="form-label"><Image size={14} style={{ display: "inline", marginRight: "6px" }} />Tree Photo</label>
+                            <div
+                                onClick={() => fileInputRef.current?.click()}
+                                onDragOver={handleDragOver}
+                                onDragLeave={handleDragLeave}
+                                onDrop={handleDrop}
                                 style={{
-                                    background: "none", border: "none", color: "var(--color-forest)",
-                                    fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
-                                    display: "flex", alignItems: "center", gap: "4px"
+                                    border: `2px dashed ${isDragging ? "var(--color-forest)" : "var(--input-border)"}`,
+                                    borderRadius: "16px",
+                                    padding: preview ? "0" : "48px 24px",
+                                    textAlign: "center",
+                                    cursor: "pointer",
+                                    transition: "all 0.3s ease",
+                                    overflow: "hidden",
+                                    background: isDragging
+                                        ? "rgba(74, 222, 128, 0.1)"
+                                        : (preview ? "transparent" : "var(--card-bg)"),
+                                    transform: isDragging ? "scale(1.02)" : "scale(1)",
                                 }}
                             >
-                                {locationLoading ? <Loader2 size={14} className="animate-spin" /> : <MapPin size={14} />}
-                                {locationLoading ? "Locating..." : "Use Current Location"}
-                            </button>
+                                {preview ? (
+                                    <img src={preview} alt="Preview" style={{ width: "100%", maxHeight: "300px", objectFit: "cover", borderRadius: "14px" }} />
+                                ) : (
+                                    <>
+                                        <Upload size={40} style={{ color: isDragging ? "var(--color-forest)" : "var(--color-forest-light)", marginBottom: "12px", display: "block", margin: "0 auto 12px", transform: isDragging ? "scale(1.1)" : "scale(1)", transition: "transform 0.2s" }} />
+                                        <p style={{ color: isDragging ? "var(--color-forest)" : "var(--text-secondary)", fontWeight: 600 }}>
+                                            {isDragging ? "Drop your tree here! 🌳" : "Click or Drag & Drop to upload"}
+                                        </p>
+                                        <p style={{ color: "#9ca3af", fontSize: "0.85rem", marginTop: "4px" }}>Max 10MB, JPG/PNG (Auto-compressed)</p>
+                                    </>
+                                )}
+                            </div>
+                            <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageChange} style={{ display: "none" }} />
                         </div>
-                        <input className="form-input" placeholder="e.g. Central Park, New York" value={location} onChange={(e) => setLocation(e.target.value)} required />
-                    </div>
 
-                    {/* Description */}
-                    <div style={{ marginBottom: "28px" }}>
-                        <label className="form-label"><FileText size={14} style={{ display: "inline", marginRight: "6px" }} />Description</label>
-                        <textarea
-                            className="form-input"
-                            placeholder="Tell us about your planting experience..."
-                            value={description}
-                            onChange={(e) => setDescription(e.target.value)}
-                            rows={3}
-                            style={{ resize: "vertical" }}
-                            required
-                        />
-                    </div>
+                        {/* Tree Type */}
+                        <div style={{ marginBottom: "20px" }}>
+                            <label className="form-label"><TreePine size={14} style={{ display: "inline", marginRight: "6px" }} />Tree Type</label>
+                            <select className="form-select" value={treeType} onChange={(e) => setTreeType(e.target.value)} required>
+                                <option value="">Select tree type...</option>
+                                {TREE_TYPES.map((t) => <option key={t} value={t}>{t}</option>)}
+                            </select>
+                        </div>
 
-                    <button type="submit" className="btn-primary" disabled={loading}
-                        style={{ width: "100%", justifyContent: "center", padding: "16px", fontSize: "1rem", display: "flex", alignItems: "center", gap: "8px" }}>
-                        {loading ? "Uploading..." : <><Upload size={20} /> Upload Tree</>}
-                    </button>
-                </form>
+                        {/* Location */}
+                        <div style={{ marginBottom: "20px" }}>
+                            <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
+                                <label className="form-label" style={{ marginBottom: 0 }}>
+                                    <MapPin size={14} style={{ display: "inline", marginRight: "6px" }} />Location
+                                </label>
+                                <button
+                                    type="button"
+                                    onClick={handleGetLocation}
+                                    disabled={locationLoading}
+                                    style={{
+                                        background: "none", border: "none", color: "var(--color-forest)",
+                                        fontSize: "0.8rem", fontWeight: 600, cursor: "pointer",
+                                        display: "flex", alignItems: "center", gap: "4px"
+                                    }}
+                                >
+                                    {locationLoading ? <Loader2 size={14} className="animate-spin" /> : <MapPin size={14} />}
+                                    {locationLoading ? "Locating..." : "Use Current Location"}
+                                </button>
+                            </div>
+                            <input className="form-input" placeholder="e.g. Central Park, New York" value={location} onChange={(e) => setLocation(e.target.value)} required />
+                        </div>
+
+                        {/* Description */}
+                        <div style={{ marginBottom: "28px" }}>
+                            <label className="form-label"><FileText size={14} style={{ display: "inline", marginRight: "6px" }} />Description</label>
+                            <textarea
+                                className="form-input"
+                                placeholder="Tell us about your planting experience..."
+                                value={description}
+                                onChange={(e) => setDescription(e.target.value)}
+                                rows={3}
+                                style={{ resize: "vertical" }}
+                                required
+                            />
+                        </div>
+
+                        <button type="submit" className="btn-primary" disabled={loading}
+                            style={{ width: "100%", justifyContent: "center", padding: "16px", fontSize: "1rem", display: "flex", alignItems: "center", gap: "8px" }}>
+                            {loading ? "Uploading..." : <><Upload size={20} /> Upload Tree</>}
+                        </button>
+                    </form>
+                </div>
             </div>
         </div>
     );

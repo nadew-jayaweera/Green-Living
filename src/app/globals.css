@@ -220,13 +220,10 @@ body {
     radial-gradient(ellipse at 20% 50%, rgba(59, 130, 246, 0.06) 0%, transparent 50%),
     radial-gradient(ellipse at 80% 20%, rgba(82, 183, 136, 0.05) 0%, transparent 50%),
     radial-gradient(ellipse at 50% 80%, rgba(168, 85, 247, 0.04) 0%, transparent 50%);
-  margin-left: -292px;
-  padding-left: 292px;
-}
-
-body:has(.admin-sidebar.admin-sidebar-collapsed) .leaf-pattern {
   margin-left: -92px;
   padding-left: 92px;
+  width: calc(100% + 92px);
+  min-height: 100vh;
 }
 
 /* ===== Glass Card ===== */
@@ -431,14 +428,16 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .leaf-pattern {
   background: linear-gradient(135deg, #1a4d2e 0%, #2d6a4f 25%, #3b82f6 50%, #8b5cf6 75%, #52b788 100%);
   position: relative;
   overflow: hidden;
-  margin-left: -292px;
-  padding-left: 316px;
+  margin-left: -92px;
+  /* Fixed to collapsed width offset */
+  padding-left: 92px;
+  /* Fixed to collapsed width offset */
+  width: calc(100% + 92px);
+  display: flex;
+  justify-content: center;
 }
 
-body:has(.admin-sidebar.admin-sidebar-collapsed) .hero-gradient {
-  margin-left: -92px;
-  padding-left: 116px;
-}
+/* Removed dynamic movement on sidebar collapse */
 
 .hero-gradient::before {
   content: '';
@@ -457,27 +456,28 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .hero-gradient {
 
 .cta-section {
   background: linear-gradient(135deg, #2d6a4f 0%, #3b82f6 40%, #8b5cf6 70%, #52b788 100%);
-  margin-left: -292px;
-  padding-left: 316px;
+  margin-left: -92px;
+  padding-left: 92px;
+  width: calc(100% + 92px);
+  display: flex;
+  justify-content: center;
 }
 
-body:has(.admin-sidebar.admin-sidebar-collapsed) .cta-section {
-  margin-left: -92px;
-  padding-left: 116px;
-}
+/* Removed dynamic movement on sidebar collapse */
 
 /* ===== Footer ===== */
 
 .site-footer {
   background: linear-gradient(135deg, #1a4d2e 0%, #2d6a4f 30%, #3b82f6 60%, #52b788 100%);
-  margin-left: -292px;
-  padding-left: 316px;
+  margin-left: -92px;
+  padding-left: 92px;
+  width: calc(100% + 92px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
 }
 
-body:has(.admin-sidebar.admin-sidebar-collapsed) .site-footer {
-  margin-left: -92px;
-  padding-left: 116px;
-}
+/* Removed dynamic movement on sidebar collapse */
 
 /* ===== Badge Styles ===== */
 
@@ -516,22 +516,43 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .site-footer {
 
 /* ===== Section Styles ===== */
 
+.section-wrapper {
+  margin-left: -92px;
+  padding-left: 92px;
+  width: calc(100% + 92px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+/* Removed dynamic movement on sidebar collapse */
+
+@media (max-width: 768px) {
+  .section-wrapper {
+    margin-left: 0 !important;
+    padding-left: 0 !important;
+    width: 100% !important;
+  }
+}
+
 .section-title {
   font-size: 2.25rem;
   font-weight: 800;
   color: var(--color-forest);
   text-align: center;
   margin-bottom: 0.5rem;
+  letter-spacing: -0.01em;
 }
 
 .section-subtitle {
   font-size: 1.1rem;
-  color: #6b7280;
+  color: var(--text-secondary);
   text-align: center;
   margin-bottom: 3rem;
   max-width: 600px;
   margin-left: auto;
   margin-right: auto;
+  line-height: 1.6;
 }
 
 /* ===== Category Pills ===== */
@@ -1062,18 +1083,14 @@ body:has(.no-sidebar) .admin-content {
 
 /* Admin Content Area */
 .admin-content {
-  margin-left: 292px;
+  margin-left: 92px;
+  /* Fixed to collapsed space */
   min-height: 100vh;
   padding: 0;
+  background: var(--background);
 }
 
-body:has(.admin-sidebar.admin-sidebar-collapsed) .admin-content {
-  margin-left: 92px;
-}
-
-.admin-content-collapsed {
-  margin-left: 92px;
-}
+/* Removed content push logic to prevent layout jitter on hover */
 
 /* ===== Responsive utilities ===== */
 
@@ -1088,40 +1105,202 @@ body:has(.admin-sidebar.admin-sidebar-collapsed) .admin-content {
   }
 
   .admin-sidebar {
-    width: 80px;
-    padding: 24px 12px;
-    border-radius: 30px;
+    display: none !important;
   }
 
   .admin-content {
-    margin-left: 92px;
+    margin-left: 0 !important;
+    padding-bottom: 80px;
+    /* Space for bottom nav */
   }
 
   .leaf-pattern {
-    margin-left: -92px;
-    padding-left: 92px;
+    margin-left: 0 !important;
+    padding-left: 0 !important;
   }
 
-  .hero-gradient {
-    margin-left: -92px;
-    padding-left: 116px;
-  }
-
-  .cta-section {
-    margin-left: -92px;
-    padding-left: 116px;
-  }
-
+  .hero-gradient,
+  .cta-section,
   .site-footer {
-    margin-left: -92px;
-    padding-left: 116px;
+    margin-left: 0 !important;
+    padding-left: 20px !important;
+    padding-right: 20px !important;
   }
 
-  .sidebar-nav-label,
-  .sidebar-logo-text,
-  .sidebar-toggle-label,
-  .sidebar-profile-info,
-  .sidebar-profile-more {
+  .mobile-bottom-nav {
+    display: flex !important;
+  }
+}
+
+/* Page Container Utility with Unified Bleed Logic */
+.page-container {
+  width: 100%;
+  margin-left: -92px;
+  padding-left: 132px;
+  /* 92 offset + 40 buffer */
+  padding-right: 40px;
+  width: calc(100% + 92px);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-top: 40px;
+  padding-bottom: 80px;
+}
+
+.page-container>* {
+  width: 100%;
+}
+
+/* Removed dynamic movement on sidebar collapse */
+
+@media (max-width: 1024px) {
+  .page-container {
+    padding: 40px 24px 80px;
+  }
+}
+
+@media (max-width: 768px) {
+  .page-container {
+    margin-left: 0 !important;
+    padding: 24px 16px 100px !important;
+    width: 100% !important;
+  }
+}
+
+.hide-on-mobile {
+  display: block;
+}
+
+.show-on-mobile {
+  display: none;
+}
+
+@media (max-width: 768px) {
+  .hide-on-mobile {
+    display: none !important;
+  }
+
+  .show-on-mobile {
+    display: block !important;
+  }
+}
+
+/* Responsive Table utilities */
+.responsive-table-container {
+  overflow-x: auto;
+  width: 100%;
+}
+
+/* Feed Specific Utilities */
+.feed-container {
+  display: flex;
+  gap: 40px;
+  align-items: flex-start;
+  flex-direction: column;
+}
+
+@media (min-width: 1024px) {
+  .feed-container {
+    flex-direction: row !important;
+  }
+
+  .lg-flex-custom {
+    display: flex !important;
+  }
+}
+
+@media (max-width: 900px) {
+  .responsive-table thead {
     display: none;
   }
+
+  .responsive-table tr {
+    display: block;
+    margin-bottom: 1.5rem;
+    padding: 1rem;
+    background: var(--card-bg) !important;
+    border: 1px solid var(--card-border) !important;
+    border-radius: 16px !important;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05) !important;
+  }
+
+  .responsive-table td {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0.75rem 0 !important;
+    border: none !important;
+    border-bottom: 1px solid var(--input-border) !important;
+    text-align: right !important;
+    background: transparent !important;
+    width: 100% !important;
+  }
+
+  .responsive-table td:last-child {
+    border-bottom: none !important;
+  }
+
+  .responsive-table td::before {
+    content: attr(data-label);
+    float: left;
+    font-weight: 700;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    color: var(--text-secondary);
+    margin-right: 1rem;
+    text-align: left;
+  }
+}
+
+/* Mobile Bottom Navigation Styles */
+.mobile-bottom-nav {
+  position: fixed;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 70px;
+  background: var(--card-bg);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border-top: 1px solid var(--card-border);
+  display: none;
+  justify-content: space-around;
+  align-items: center;
+  z-index: 1000;
+  padding: 0 10px;
+  padding-bottom: env(safe-area-inset-bottom);
+}
+
+.mobile-nav-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-secondary);
+  text-decoration: none;
+  gap: 4px;
+  flex: 1;
+  background: none;
+  border: none;
+  padding: 8px 0;
+  transition: all 0.2s ease;
+}
+
+.mobile-nav-icon {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.mobile-nav-label {
+  font-size: 0.65rem;
+  font-weight: 600;
+}
+
+.mobile-nav-item-active {
+  color: var(--color-forest);
+}
+
+.mobile-nav-item:active {
+  transform: scale(0.9);
 }

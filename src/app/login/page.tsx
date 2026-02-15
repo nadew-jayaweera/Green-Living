@@ -47,8 +47,8 @@ export default function LoginPage() {
                     }}>
                         <Leaf size={32} />
                     </div>
-                    <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", marginBottom: "8px" }}>Welcome Back</h1>
-                    <p style={{ color: "#6b7280" }}>Sign in to continue your green journey</p>
+                    <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--color-forest)", marginBottom: "8px" }}>Welcome Back</h1>
+                    <p style={{ color: "var(--text-secondary)" }}>Sign in to continue your green journey</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>
@@ -86,9 +86,9 @@ export default function LoginPage() {
                     </button>
                 </form>
 
-                <div style={{ textAlign: "center", marginTop: "24px", color: "#6b7280", fontSize: "0.95rem" }}>
+                <div style={{ textAlign: "center", marginTop: "24px", color: "var(--text-secondary)", fontSize: "0.95rem" }}>
                     Don&apos;t have an account?{" "}
-                    <Link href="/register" style={{ color: "#2d6a4f", fontWeight: 600, textDecoration: "none" }}>
+                    <Link href="/register" style={{ color: "var(--color-forest)", fontWeight: 600, textDecoration: "none" }}>
                         Create one <ArrowRight size={14} style={{ display: "inline" }} />
                     </Link>
                 </div>

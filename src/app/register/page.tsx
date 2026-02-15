@@ -81,8 +81,8 @@ export default function RegisterPage() {
                     }}>
                         <Leaf size={32} />
                     </div>
-                    <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", marginBottom: "8px" }}>Join Green Living</h1>
-                    <p style={{ color: "#6b7280" }}>Create your account and start planting</p>
+                    <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "var(--color-forest)", marginBottom: "8px" }}>Join Green Living</h1>
+                    <p style={{ color: "var(--text-secondary)" }}>Create your account and start planting</p>
                 </div>
 
                 <form onSubmit={handleSubmit}>

@@ -80,7 +80,7 @@ export default function HomePage() {
   }, [recentUploads]); // Re-run when uploads load
 
   return (
-    <div style={{ overflowX: "hidden" }}>
+    <div>
       {/* ===== HERO SECTION ===== */}
       <section className="hero-gradient" style={{ padding: "0 24px 80px", color: "white", textAlign: "center", position: "relative" }}>
         {/* Animated Background Blobs */}
@@ -106,6 +106,7 @@ export default function HomePage() {
               fontWeight: 900,
               lineHeight: 1.1,
               marginBottom: "24px",
+              marginLeft: "52px",
               letterSpacing: "-0.02em",
               textShadow: "0 4px 20px rgba(0,0,0,0.1)"
             }}
@@ -143,10 +144,10 @@ export default function HomePage() {
       </section>
 
       {/* ===== STATS SECTION ===== */}
-      <section style={{ padding: "100px 24px", background: "var(--background)", position: "relative" }}>
+      <section className="section-wrapper" style={{ padding: "100px 24px", background: "var(--background)", position: "relative", overflow: "hidden" }}>
         <div className="blob-shape" style={{ width: "500px", height: "500px", background: "rgba(254, 243, 199, 0.4)", top: "10%", left: "-10%" }} />
 
-        <div style={{ maxWidth: "1000px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: "1100px", width: "100%", position: "relative", zIndex: 1 }}>
           <div className="reveal-on-scroll">
             <h2 className="section-title text-gradient-forest">Our Impact</h2>
             <p className="section-subtitle">Every tree planted is a step toward a healthier planet</p>
@@ -188,8 +189,8 @@ export default function HomePage() {
       </section>
 
       {/* ===== HOW IT WORKS ===== */}
-      <section style={{ padding: "100px 24px", position: "relative" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+      <section className="section-wrapper" style={{ padding: "100px 24px", position: "relative" }}>
+        <div style={{ maxWidth: "1100px", width: "100%" }}>
           <div className="reveal-on-scroll">
             <h2 className="section-title text-gradient-forest">How It Works</h2>
             <p className="section-subtitle">Three simple steps to make a difference</p>
@@ -231,10 +232,10 @@ export default function HomePage() {
       </section>
 
       {/* ===== FEATURES SECTION ===== */}
-      <section style={{ padding: "100px 24px", background: "var(--color-cream)", position: "relative", overflow: "hidden" }}>
+      <section className="section-wrapper" style={{ padding: "100px 24px", background: "var(--color-cream)", position: "relative", overflow: "hidden" }}>
         <div className="blob-shape" style={{ width: "600px", height: "600px", background: "rgba(186, 230, 253, 0.3)", top: "20%", right: "-10%" }} />
 
-        <div style={{ maxWidth: "1100px", margin: "0 auto", position: "relative", zIndex: 1 }}>
+        <div style={{ maxWidth: "1100px", width: "100%", position: "relative", zIndex: 1 }}>
           <div className="reveal-on-scroll">
             <h2 className="section-title text-gradient-forest">Platform Features</h2>
             <p className="section-subtitle">Everything you need to make a green impact</p>
@@ -271,8 +272,8 @@ export default function HomePage() {
 
       {/* ===== RECENT UPLOADS GALLERY ===== */}
       {(recentUploads.length > 0 || isLoading) && (
-        <section style={{ padding: "100px 24px" }}>
-          <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        <section className="section-wrapper" style={{ padding: "100px 24px" }}>
+          <div style={{ maxWidth: "1200px", width: "100%" }}>
             <div className="reveal-on-scroll">
               <h2 className="section-title text-gradient-forest">Recent Community Uploads</h2>
               <p className="section-subtitle">See what our members have been planting</p>
@@ -339,7 +340,7 @@ export default function HomePage() {
         position: "relative",
         overflow: "hidden"
       }}>
-        <div style={{ maxWidth: "700px", margin: "0 auto", position: "relative", zIndex: 10 }}>
+        <div style={{ maxWidth: "700px", width: "100%", position: "relative", zIndex: 10 }}>
           <h2 className="reveal-on-scroll" style={{ fontSize: "3rem", fontWeight: 900, marginBottom: "20px", textShadow: "0 4px 16px rgba(0,0,0,0.2)" }}>
             Ready to Make a Difference? 🌍
           </h2>

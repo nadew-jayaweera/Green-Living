@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
@@ -28,6 +28,21 @@ export const metadata: Metadata = {
     description: "Plant trees, earn badges, protect the planet.",
     type: "website",
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Green Living",
+  },
+  icons: {
+    apple: "/icons/icon.svg",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#2d6a4f",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -36,7 +51,7 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <head>
         <script
           dangerouslySetInnerHTML={{
@@ -55,6 +70,7 @@ export default function RootLayout({
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+        suppressHydrationWarning
       >
         <SessionProvider>
           <ThemeProvider>
