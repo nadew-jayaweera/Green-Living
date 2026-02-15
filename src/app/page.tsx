@@ -60,12 +60,12 @@ export default function HomePage() {
   return (
     <div>
       {/* ===== HERO SECTION ===== */}
-      <section className="hero-gradient" style={{ padding: "100px 24px 80px", color: "white", textAlign: "center" }}>
-        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
+      <section className="hero-gradient" style={{ padding: "0 24px 80px", color: "white", textAlign: "center" }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto", paddingTop: "100px" }}>
           <div className="animate-fade-in-up" style={{ marginBottom: "24px" }}>
             <span style={{
               display: "inline-flex", alignItems: "center", gap: "8px",
-              background: "rgba(255,255,255,0.15)", padding: "8px 20px",
+              background: "rgba(240,240,240,0.15)", padding: "8px 20px",
               borderRadius: "50px", fontSize: "0.9rem", fontWeight: 600, backdropFilter: "blur(10px)",
             }}>
               🌍 Join the Movement
@@ -98,8 +98,8 @@ export default function HomePage() {
               <Sprout size={22} /> Start Planting
             </Link>
             <Link href="/forum" className="btn-secondary" style={{
-              padding: "16px 40px", fontSize: "1.1rem", color: "white", borderColor: "rgba(255,255,255,0.4)",
-              background: "rgba(255,255,255,0.1)", textDecoration: "none"
+              padding: "16px 40px", fontSize: "1.1rem", color: "white", borderColor: "rgba(240,240,240,0.4)",
+              background: "rgba(240,240,240,0.1)", textDecoration: "none"
             }}>
               Join Community <ArrowRight size={20} />
             </Link>
@@ -252,9 +252,8 @@ export default function HomePage() {
       )}
 
       {/* ===== CTA SECTION ===== */}
-      <section style={{
+      <section className="cta-section" style={{
         padding: "80px 24px",
-        background: "linear-gradient(135deg, #2d6a4f 0%, #40916c 50%, #52b788 100%)",
         textAlign: "center",
         color: "white",
       }}>
@@ -267,7 +266,7 @@ export default function HomePage() {
           </p>
           <Link href="/register" className="btn-primary" style={{
             padding: "18px 48px", fontSize: "1.15rem",
-            background: "white", color: "#1a4d2e", textDecoration: "none",
+            background: "#f0f0f0", color: "#1a4d2e", textDecoration: "none",
           }}>
             Join Green Living <ArrowRight size={20} />
           </Link>

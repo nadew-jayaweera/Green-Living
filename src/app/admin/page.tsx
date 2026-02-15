@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Shield, Users, TreePine, MessageCircle, Image, Check, X, Trash2, AlertCircle, UserCog, Mail, Calendar, Award } from "lucide-react";
+import { Users, TreePine, MessageCircle, Image, Check, X, Trash2, AlertCircle, UserCog, Mail, Calendar, Award, Search, Filter } from "lucide-react";
 
 interface AdminData {
     stats: {
@@ -37,6 +37,7 @@ interface AdminData {
         createdAt: string;
         _count: { uploads: number; badges: number; forumPosts: number };
     }>;
+    mainAdminEmail: string;
 }
 
 export default function AdminPage() {
@@ -46,8 +47,17 @@ export default function AdminPage() {
     const [loading, setLoading] = useState(true);
     const [activeTab, setActiveTab] = useState<"overview" | "uploads" | "posts" | "users">("overview");
     const [actionLoading, setActionLoading] = useState("");
+    const [searchQuery, setSearchQuery] = useState("");
 
     const userRole = (session?.user as { role?: string })?.role;
+    const userEmail = (session?.user as { email?: string })?.email;
+    const isMainAdmin = data?.mainAdminEmail ? userEmail === data.mainAdminEmail : false;
+
+    // Filter users based on search
+    const filteredUsers = data?.allUsers.filter(user =>
+        user.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
+        user.email.toLowerCase().includes(searchQuery.toLowerCase())
+    ) || [];
 
     useEffect(() => {
         if (status === "authenticated") {
@@ -107,21 +117,37 @@ export default function AdminPage() {
 
     return (
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 24px 80px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
-                <div style={{
-                    background: "linear-gradient(135deg, #dc2626, #ef4444)", borderRadius: "14px",
-                    padding: "10px", color: "white",
-                }}>
-                    <Shield size={28} />
-                </div>
-                <div>
-                    <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", margin: 0 }}>Admin Panel</h1>
-                    <p style={{ color: "#6b7280", margin: 0 }}>Manage platform content and users</p>
-                </div>
+            {/* Page Header */}
+            <div style={{ marginBottom: "32px" }}>
+                <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", margin: 0 }}>
+                    Admin Panel
+                </h1>
+                <p style={{ color: "#6b7280", margin: "4px 0 0" }}>
+                    Manage platform content and users
+                </p>
+            </div>
+
+            {/* Sub-Tabs */}
+            <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+                {[
+                    { key: "overview", label: "Overview" },
+                    { key: "users", label: "Manage Users" },
+                    { key: "uploads", label: "Manage Uploads" },
+                    { key: "posts", label: "Manage Posts" },
+                ].map((tab) => (
+                    <button key={tab.key} onClick={() => setActiveTab(tab.key as typeof activeTab)}
+                        className={`category-pill ${activeTab === tab.key ? "active" : ""}`}
+                        style={{
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                            transform: activeTab === tab.key ? "scale(1.05)" : "scale(1)",
+                        }}>
+                        {tab.label}
+                    </button>
+                ))}
             </div>
 
             {/* Stats Cards */}
-            {data && (
+            {data && activeTab === "overview" && (
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "32px" }}>
                     {[
                         { icon: <Users size={24} />, value: data.stats.totalUsers, label: "Total Users", color: "#2d6a4f" },
@@ -141,115 +167,141 @@ export default function AdminPage() {
                 </div>
             )}
 
-            {/* Tabs */}
-            <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
-                {[
-                    { key: "overview", label: "Overview" },
-                    { key: "users", label: "Manage Users" },
-                    { key: "uploads", label: "Manage Uploads" },
-                    { key: "posts", label: "Manage Posts" },
-                ].map((tab) => (
-                    <button key={tab.key} onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                        className={`category-pill ${activeTab === tab.key ? "active" : ""}`}>
-                        {tab.label}
-                    </button>
-                ))}
-            </div>
-
             {/* Users Management */}
             {(activeTab === "overview" || activeTab === "users") && data && (
-                <div className="glass-card" style={{ padding: "24px", marginBottom: "24px" }}>
-                    <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
-                        <UserCog size={22} style={{ color: "#2d6a4f" }} />
-                        <h2 style={{ fontWeight: 700, color: "#1a4d2e", margin: 0 }}>
-                            {activeTab === "overview" ? "Recent Users" : `All Registered Users (${data.allUsers.length})`}
-                        </h2>
+                <div className="glass-card animate-fade-in-up" style={{ padding: "24px", marginBottom: "24px" }}>
+                    <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", flexWrap: "wrap", gap: "16px", marginBottom: "20px" }}>
+                        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+                            <div style={{ background: "rgba(82,183,136,0.1)", padding: "8px", borderRadius: "8px", color: "#2d6a4f" }}>
+                                <UserCog size={24} />
+                            </div>
+                            <div>
+                                <h2 style={{ fontWeight: 700, color: "#1a4d2e", margin: 0 }}>
+                                    {activeTab === "overview" ? "Recent Users" : "Registered Users"}
+                                </h2>
+                                <p style={{ fontSize: "0.85rem", color: "#6b7280", margin: 0 }}>
+                                    {activeTab === "overview" ? "Newest members of the community" : `Manage all ${data.allUsers.length} users`}
+                                </p>
+                            </div>
+                        </div>
+
+                        {activeTab === "users" && (
+                            <div style={{ position: "relative", minWidth: "250px" }}>
+                                <Search size={16} style={{ position: "absolute", left: "12px", top: "50%", transform: "translateY(-50%)", color: "#6b7280" }} />
+                                <input
+                                    type="text"
+                                    placeholder="Search users..."
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    className="form-input"
+                                    style={{ paddingLeft: "36px", paddingTop: "10px", paddingBottom: "10px", fontSize: "0.9rem" }}
+                                />
+                            </div>
+                        )}
                     </div>
+
                     <div style={{ overflowX: "auto" }}>
-                        <table style={{ width: "100%", borderCollapse: "collapse" }}>
+                        <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 8px" }}>
                             <thead>
-                                <tr style={{ borderBottom: "2px solid rgba(82,183,136,0.1)" }}>
-                                    {["Name", "Email", "Role", "Uploads", "Badges", "Posts", "Joined", "Actions"].map((h) => (
-                                        <th key={h} style={{ textAlign: "left", padding: "12px 16px", fontSize: "0.85rem", color: "#6b7280", fontWeight: 600 }}>{h}</th>
+                                <tr>
+                                    {["Name", "Contact", "Role", "Uploads", "Badges", "Posts", "Joined", "Actions"].map((h) => (
+                                        <th key={h} style={{ textAlign: "left", padding: "0 16px", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "#6b7280", fontWeight: 700 }}>{h}</th>
                                     ))}
                                 </tr>
                             </thead>
                             <tbody>
-                                {(activeTab === "overview" ? data.allUsers.slice(0, 5) : data.allUsers).map((user) => {
+                                {(activeTab === "overview" ? data.allUsers.slice(0, 5) : filteredUsers).map((user) => {
                                     const isCurrentUser = (session?.user as { email?: string })?.email === user.email;
+                                    const isUserMainAdmin = user.email === data.mainAdminEmail;
                                     return (
-                                        <tr key={user.id} style={{ borderBottom: "1px solid rgba(82,183,136,0.05)" }}>
-                                            <td style={{ padding: "12px 16px", fontSize: "0.9rem", fontWeight: 600, color: "#1a4d2e" }}>
-                                                <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                                        <tr key={user.id} style={{ transition: "all 0.2s ease" }} className="hover:bg-green-50/50">
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", borderTopLeftRadius: "12px", borderBottomLeftRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                                     <div style={{
-                                                        width: "32px", height: "32px", borderRadius: "50%",
-                                                        background: "linear-gradient(135deg, #2d6a4f, #52b788)",
+                                                        width: "36px", height: "36px", borderRadius: "10px",
+                                                        background: isUserMainAdmin ? "linear-gradient(135deg, #dc2626, #f59e0b)" : "linear-gradient(135deg, #2d6a4f, #52b788)",
                                                         display: "flex", alignItems: "center", justifyContent: "center",
-                                                        color: "white", fontSize: "0.8rem", fontWeight: 700,
+                                                        color: "white", fontSize: "0.9rem", fontWeight: 700,
+                                                        boxShadow: "0 4px 6px rgba(0,0,0,0.1)",
                                                     }}>
                                                         {user.name.charAt(0).toUpperCase()}
                                                     </div>
-                                                    {user.name}
-                                                    {isCurrentUser && <span style={{ fontSize: "0.7rem", color: "#6b7280" }}>(you)</span>}
+                                                    <div>
+                                                        <div style={{ fontWeight: 600, color: "#1a4d2e", fontSize: "0.95rem" }}>{user.name}</div>
+                                                        {isCurrentUser && <span style={{ fontSize: "0.7rem", color: "#6b7280", display: "block" }}>(You)</span>}
+                                                        {isUserMainAdmin && <span style={{ fontSize: "0.65rem", padding: "2px 6px", borderRadius: "4px", background: "rgba(220,38,38,0.1)", color: "#dc2626", fontWeight: 700 }}>Main Admin</span>}
+                                                    </div>
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", fontSize: "0.85rem", color: "#6b7280" }}>
-                                                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                                    <Mail size={13} /> {user.email}
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#4b5563", fontSize: "0.9rem" }}>
+                                                    <Mail size={14} /> {user.email}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px" }}>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <span style={{
-                                                    padding: "4px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: 600,
-                                                    background: user.role === "ADMIN" ? "rgba(220,38,38,0.1)" : "rgba(82,183,136,0.1)",
+                                                    padding: "4px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.02em",
+                                                    background: user.role === "ADMIN" ? "rgba(220,38,38,0.1)" : "rgba(82,183,136,0.15)",
                                                     color: user.role === "ADMIN" ? "#dc2626" : "#2d6a4f",
+                                                    border: user.role === "ADMIN" ? "1px solid rgba(220,38,38,0.2)" : "1px solid rgba(82,183,136,0.2)",
                                                 }}>
-                                                    {user.role === "ADMIN" ? "🛡️ ADMIN" : "👤 USER"}
+                                                    {user.role}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: "12px 16px", fontSize: "0.9rem", textAlign: "center" }}>
-                                                <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#52b788" }}>
-                                                    <TreePine size={14} /> {user._count.uploads}
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#2d6a4f" }}>
+                                                    <div style={{ background: "rgba(82,183,136,0.1)", padding: "4px", borderRadius: "50%" }}><TreePine size={14} /></div>
+                                                    {user._count.uploads}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", fontSize: "0.9rem", textAlign: "center" }}>
-                                                <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#f59e0b" }}>
-                                                    <Award size={14} /> {user._count.badges}
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#d97706" }}>
+                                                    <div style={{ background: "rgba(245,158,11,0.1)", padding: "4px", borderRadius: "50%" }}><Award size={14} /></div>
+                                                    {user._count.badges}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", fontSize: "0.9rem", textAlign: "center" }}>
-                                                <div style={{ display: "flex", alignItems: "center", gap: "4px", color: "#87ceeb" }}>
-                                                    <MessageCircle size={14} /> {user._count.forumPosts}
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#0284c7" }}>
+                                                    <div style={{ background: "rgba(14,165,233,0.1)", padding: "4px", borderRadius: "50%" }}><MessageCircle size={14} /></div>
+                                                    {user._count.forumPosts}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", fontSize: "0.8rem", color: "#6b7280" }}>
-                                                <div style={{ display: "flex", alignItems: "center", gap: "6px" }}>
-                                                    <Calendar size={13} /> {new Date(user.createdAt).toLocaleDateString()}
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ color: "#6b7280", fontSize: "0.85rem" }}>
+                                                    {new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px" }}>
-                                                <div style={{ display: "flex", gap: "6px" }}>
-                                                    {!isCurrentUser && (
-                                                        <button onClick={() => toggleRole(user.id, user.role)}
-                                                            disabled={actionLoading === user.id}
-                                                            title={user.role === "ADMIN" ? "Demote to User" : "Promote to Admin"}
-                                                            style={{
-                                                                padding: "6px 12px", borderRadius: "8px", border: "none", cursor: "pointer",
-                                                                fontSize: "0.75rem", fontWeight: 600,
-                                                                background: user.role === "ADMIN" ? "rgba(245,158,11,0.1)" : "rgba(82,183,136,0.1)",
-                                                                color: user.role === "ADMIN" ? "#d97706" : "#2d6a4f",
-                                                                opacity: actionLoading === user.id ? 0.5 : 1,
-                                                            }}>
-                                                            {user.role === "ADMIN" ? "Demote" : "Promote"}
-                                                        </button>
-                                                    )}
-                                                    {!isCurrentUser && (
-                                                        <button onClick={() => deleteContent("user", user.id)}
-                                                            disabled={actionLoading === user.id}
-                                                            title="Delete User"
-                                                            style={{ padding: "6px 10px", borderRadius: "8px", border: "none", cursor: "pointer", background: "rgba(239,68,68,0.1)", color: "#dc2626" }}>
-                                                            <Trash2 size={14} />
-                                                        </button>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", borderTopRightRadius: "12px", borderBottomRightRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
+                                                    {isUserMainAdmin ? (
+                                                        <span style={{ fontSize: "0.75rem", color: "#6b7280", fontStyle: "italic", fontWeight: 500 }}>Protected</span>
+                                                    ) : (
+                                                        <>
+                                                            {isMainAdmin && !isCurrentUser && (
+                                                                <button onClick={() => toggleRole(user.id, user.role)}
+                                                                    disabled={actionLoading === user.id}
+                                                                    title={user.role === "ADMIN" ? "Demote to User" : "Promote to Admin"}
+                                                                    className="hover:scale-105 active:scale-95 transition-transform"
+                                                                    style={{
+                                                                        padding: "6px 12px", borderRadius: "8px", border: "none", cursor: "pointer",
+                                                                        fontSize: "0.75rem", fontWeight: 600,
+                                                                        background: user.role === "ADMIN" ? "rgba(245,158,11,0.1)" : "rgba(82,183,136,0.1)",
+                                                                        color: user.role === "ADMIN" ? "#d97706" : "#2d6a4f",
+                                                                        opacity: actionLoading === user.id ? 0.5 : 1,
+                                                                    }}>
+                                                                    {user.role === "ADMIN" ? "Demote" : "Promote"}
+                                                                </button>
+                                                            )}
+                                                            {isMainAdmin && !isCurrentUser && (
+                                                                <button onClick={() => deleteContent("user", user.id)}
+                                                                    disabled={actionLoading === user.id}
+                                                                    title="Delete User"
+                                                                    className="hover:bg-red-100 hover:scale-105 active:scale-95 transition-all"
+                                                                    style={{ padding: "6px 10px", borderRadius: "8px", border: "none", cursor: "pointer", background: "rgba(239,68,68,0.1)", color: "#dc2626" }}>
+                                                                    <Trash2 size={14} />
+                                                                </button>
+                                                            )}
+                                                        </>
                                                     )}
                                                 </div>
                                             </td>
