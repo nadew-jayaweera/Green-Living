@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Shield, Users, TreePine, MessageCircle, Image, Check, X, Trash2, AlertCircle, UserCog, Mail, Calendar, Award, Search, Filter } from "lucide-react";
+import { Users, TreePine, MessageCircle, Image, Check, X, Trash2, AlertCircle, UserCog, Mail, Calendar, Award, Search, Filter } from "lucide-react";
 
 interface AdminData {
     stats: {
@@ -117,21 +117,37 @@ export default function AdminPage() {
 
     return (
         <div style={{ maxWidth: "1200px", margin: "0 auto", padding: "40px 24px 80px" }}>
-            <div style={{ display: "flex", alignItems: "center", gap: "12px", marginBottom: "32px" }}>
-                <div style={{
-                    background: "linear-gradient(135deg, #dc2626, #ef4444)", borderRadius: "14px",
-                    padding: "10px", color: "white",
-                }}>
-                    <Shield size={28} />
-                </div>
-                <div>
-                    <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", margin: 0 }}>Admin Panel</h1>
-                    <p style={{ color: "#6b7280", margin: 0 }}>Manage platform content and users</p>
-                </div>
+            {/* Page Header */}
+            <div style={{ marginBottom: "32px" }}>
+                <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", margin: 0 }}>
+                    Admin Panel
+                </h1>
+                <p style={{ color: "#6b7280", margin: "4px 0 0" }}>
+                    Manage platform content and users
+                </p>
+            </div>
+
+            {/* Sub-Tabs */}
+            <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
+                {[
+                    { key: "overview", label: "Overview" },
+                    { key: "users", label: "Manage Users" },
+                    { key: "uploads", label: "Manage Uploads" },
+                    { key: "posts", label: "Manage Posts" },
+                ].map((tab) => (
+                    <button key={tab.key} onClick={() => setActiveTab(tab.key as typeof activeTab)}
+                        className={`category-pill ${activeTab === tab.key ? "active" : ""}`}
+                        style={{
+                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                            transform: activeTab === tab.key ? "scale(1.05)" : "scale(1)",
+                        }}>
+                        {tab.label}
+                    </button>
+                ))}
             </div>
 
             {/* Stats Cards */}
-            {data && (
+            {data && activeTab === "overview" && (
                 <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "16px", marginBottom: "32px" }}>
                     {[
                         { icon: <Users size={24} />, value: data.stats.totalUsers, label: "Total Users", color: "#2d6a4f" },
@@ -150,25 +166,6 @@ export default function AdminPage() {
                     ))}
                 </div>
             )}
-
-            {/* Tabs */}
-            <div style={{ display: "flex", gap: "8px", marginBottom: "24px" }}>
-                {[
-                    { key: "overview", label: "Overview" },
-                    { key: "users", label: "Manage Users" },
-                    { key: "uploads", label: "Manage Uploads" },
-                    { key: "posts", label: "Manage Posts" },
-                ].map((tab) => (
-                    <button key={tab.key} onClick={() => setActiveTab(tab.key as typeof activeTab)}
-                        className={`category-pill ${activeTab === tab.key ? "active" : ""}`}
-                        style={{
-                            transition: "all 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                            transform: activeTab === tab.key ? "scale(1.05)" : "scale(1)",
-                        }}>
-                        {tab.label}
-                    </button>
-                ))}
-            </div>
 
             {/* Users Management */}
             {(activeTab === "overview" || activeTab === "users") && data && (
