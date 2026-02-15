@@ -80,7 +80,7 @@ export async function POST(request: Request) {
                 location,
                 description,
                 treeType,
-                status: "APPROVED", // Auto-approve for now
+                status: "PENDING", // Awaiting admin approval
             },
         });
 

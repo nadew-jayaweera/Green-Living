@@ -48,6 +48,15 @@ export default function AdminPage() {
     const [activeTab, setActiveTab] = useState<"overview" | "uploads" | "posts" | "users">("overview");
     const [actionLoading, setActionLoading] = useState("");
     const [searchQuery, setSearchQuery] = useState("");
+    const [selectedUpload, setSelectedUpload] = useState<{
+        id: string;
+        imageUrl: string;
+        treeType: string;
+        location: string;
+        status: string;
+        user: { name: string; email: string };
+    } | null>(null);
+    const [isHydrated, setIsHydrated] = useState(false);
 
     const userRole = (session?.user as { role?: string })?.role;
     const userEmail = (session?.user as { email?: string })?.email;
@@ -68,6 +77,15 @@ export default function AdminPage() {
             fetchData();
         }
     }, [session, status]);
+
+    useEffect(() => {
+        setIsHydrated(true);
+    }, []);
+
+    const formatDate = (value: string, options?: Intl.DateTimeFormatOptions) => {
+        if (!isHydrated) return "";
+        return new Date(value).toLocaleDateString("en-US", options);
+    };
 
     const fetchData = () => {
         fetch("/api/admin")
@@ -268,7 +286,7 @@ export default function AdminPage() {
                                             </td>
                                             <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ color: "#6b7280", fontSize: "0.85rem" }}>
-                                                    {new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
+                                                    {formatDate(user.createdAt, { month: "short", day: "numeric", year: "numeric" })}
                                                 </div>
                                             </td>
                                             <td style={{ padding: "12px 16px", background: "#f0f0f0", borderTopRightRadius: "12px", borderBottomRightRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
@@ -352,10 +370,15 @@ export default function AdminPage() {
                                             </span>
                                         </td>
                                         <td style={{ padding: "12px 16px", fontSize: "0.8rem", color: "#6b7280" }}>
-                                            {new Date(upload.createdAt).toLocaleDateString()}
+                                            {formatDate(upload.createdAt)}
                                         </td>
                                         <td style={{ padding: "12px 16px" }}>
                                             <div style={{ display: "flex", gap: "6px" }}>
+                                                <button onClick={() => setSelectedUpload(upload)}
+                                                    title="View image"
+                                                    style={{ padding: "6px 10px", borderRadius: "8px", border: "none", cursor: "pointer", background: "rgba(14,165,233,0.1)", color: "#0284c7" }}>
+                                                    <Image size={14} />
+                                                </button>
                                                 {upload.status !== "APPROVED" && (
                                                     <button onClick={() => moderateUpload(upload.id, "APPROVED")}
                                                         disabled={actionLoading === upload.id}
@@ -420,6 +443,97 @@ export default function AdminPage() {
                                 ))}
                             </tbody>
                         </table>
+                    </div>
+                </div>
+            )}
+
+            {/* Image Preview Modal */}
+            {selectedUpload && (
+                <div style={{
+                    position: "fixed", inset: 0, background: "rgba(0, 0, 0, 0.7)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    zIndex: 9999, padding: "20px",
+                }}>
+                    <div className="glass-card" style={{
+                        maxWidth: "600px", width: "100%", padding: "24px",
+                        background: "white", maxHeight: "90vh", overflowY: "auto",
+                    }}>
+                        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "16px" }}>
+                            <h2 style={{ fontWeight: 700, color: "#1a4d2e", margin: 0 }}>Review Upload</h2>
+                            <button onClick={() => setSelectedUpload(null)} style={{
+                                background: "none", border: "none", cursor: "pointer",
+                                fontSize: "24px", color: "#6b7280", padding: "0",
+                            }}>
+                                ×
+                            </button>
+                        </div>
+
+                        <div style={{
+                            width: "100%", height: "350px", borderRadius: "12px",
+                            overflow: "hidden", marginBottom: "20px", background: "#f3f4f6",
+                        }}>
+                            <img src={selectedUpload.imageUrl} alt={selectedUpload.treeType}
+                                style={{ width: "100%", height: "100%", objectFit: "cover" }} />
+                        </div>
+
+                        <div style={{ marginBottom: "20px" }}>
+                            <div style={{ marginBottom: "12px" }}>
+                                <label style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Tree Type</label>
+                                <div style={{ fontSize: "0.95rem", color: "#1a4d2e", fontWeight: 600 }}>{selectedUpload.treeType}</div>
+                            </div>
+                            <div style={{ marginBottom: "12px" }}>
+                                <label style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Location</label>
+                                <div style={{ fontSize: "0.95rem", color: "#1a4d2e" }}>📍 {selectedUpload.location}</div>
+                            </div>
+                            <div style={{ marginBottom: "12px" }}>
+                                <label style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Uploaded by</label>
+                                <div style={{ fontSize: "0.95rem", color: "#1a4d2e" }}>{selectedUpload.user.name} ({selectedUpload.user.email})</div>
+                            </div>
+                            <div>
+                                <label style={{ fontSize: "0.8rem", color: "#6b7280", fontWeight: 600 }}>Status</label>
+                                <span style={{
+                                    padding: "4px 12px", borderRadius: "50px", fontSize: "0.75rem", fontWeight: 600, display: "inline-block",
+                                    background: selectedUpload.status === "APPROVED" ? "rgba(82,183,136,0.1)" : selectedUpload.status === "REJECTED" ? "rgba(239,68,68,0.1)" : "rgba(245,158,11,0.1)",
+                                    color: selectedUpload.status === "APPROVED" ? "#2d6a4f" : selectedUpload.status === "REJECTED" ? "#dc2626" : "#d97706",
+                                }}>
+                                    {selectedUpload.status}
+                                </span>
+                            </div>
+                        </div>
+
+                        <div style={{ display: "flex", gap: "12px" }}>
+                            {selectedUpload.status !== "APPROVED" && (
+                                <button onClick={() => {
+                                    moderateUpload(selectedUpload.id, "APPROVED");
+                                    setSelectedUpload(null);
+                                }}
+                                    className="btn-primary" style={{ flex: 1, padding: "12px" }}>
+                                    <Check size={16} style={{ display: "inline", marginRight: "6px" }} />
+                                    Approve
+                                </button>
+                            )}
+                            {selectedUpload.status !== "REJECTED" && (
+                                <button onClick={() => {
+                                    moderateUpload(selectedUpload.id, "REJECTED");
+                                    setSelectedUpload(null);
+                                }}
+                                    style={{
+                                        flex: 1, padding: "12px", border: "none", borderRadius: "8px",
+                                        background: "rgba(239,68,68,0.1)", color: "#dc2626", cursor: "pointer",
+                                        fontWeight: 600, display: "flex", alignItems: "center", justifyContent: "center", gap: "6px",
+                                    }}>
+                                    <X size={16} />
+                                    Reject
+                                </button>
+                            )}
+                            <button onClick={() => setSelectedUpload(null)}
+                                style={{
+                                    flex: 1, padding: "12px", border: "1px solid #e5e7eb", borderRadius: "8px",
+                                    background: "white", color: "#6b7280", cursor: "pointer", fontWeight: 600,
+                                }}>
+                                Close
+                            </button>
+                        </div>
                     </div>
                 </div>
             )}
