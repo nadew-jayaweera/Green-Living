@@ -4,6 +4,22 @@ A modern, full-stack Next.js application dedicated to promoting sustainability a
 
 ## ✅ Recent Updates (This Branch)
 
+### 🌓 Dark Mode & Themability
+- **Persistent Dark Mode**: System-aware dark mode that saves preferences to `localStorage`, preventing FOUC (Flash of Unstyled Content).
+- **Theme Consistency**: polished spacing, contrast, and color variables across all pages (Admin, Profile, Forum, Upload) for a seamless experience in both light and dark modes.
+- **Glassmorphism UI**: Enhanced sidebar transparency and card backgrounds for a premium, modern aesthetic.
+
+### ✨ Quality of Life Features
+- **Toast Notifications**: Replaced intrusive alerts with a non-blocking, beautiful toast notification system for success/error messages.
+- **Smart Image Uploads**: Added drag-and-drop support and client-side image compression to optimize performance and user experience.
+- **Location Auto-fill**: integrated Geolocation API to automatically fetch and fill the city/state in the upload form.
+- **Back to Top**: Added a smooth-scrolling "Back to Top" button for easy navigation on long pages.
+- **Mobile Responsiveness**: Fixed layout issues to ensure a perfect experience on mobile devices.
+
+### 🧹 Codebase Health
+- **Cleanup**: Removed unused components (`AdminSidebar`), legacy scripts, and boilerplate assets to streamline the project.
+- **Optimization**: improved project structure and removed redundant dependencies.
+
 ### 🌍 Global Forest Feed & Social Interaction
 - **Community Feed**: A new "Global Forest" page displaying all user-uploaded trees in a sleek card layout.
 - **Engagement System**: Users can now "Like" posts with optimistic UI updates for instant feedback.
@@ -13,11 +29,6 @@ A modern, full-stack Next.js application dedicated to promoting sustainability a
 - **Content Moderation**: Centralized panel to approve, reject, or delete plant uploads to ensure platform quality.
 - **User Management**: Ability for main admins to promote/demote users to admin status and manage the community list.
 - **Platform Analytics**: Real-time stats for total users, uploads, and pending review counts.
-
-### 🌓 Theme Persistence & Color Polish
-- **Dark Mode 2.0**: Fixed color contrast issues in the Admin Panel and Sidebar Profile section.
-- **Theme Consistency**: All components, including modals and toasts, now adapt perfectly to both light and dark themes using CSS variables.
-- **Improved Sidebar**: Fixed text rendering and profile info visibility in dark mode.
 
 ### 🛠️ Robust System Improvements
 - **Upload Fail-safes**: Improved image processing logic with an automatic fallback to base64 if compression or external storage fails.

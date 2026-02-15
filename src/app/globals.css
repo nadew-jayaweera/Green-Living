@@ -44,6 +44,12 @@
   --badge-bg-hover: linear-gradient(135deg, rgba(244, 253, 244, 0.95) 0%, rgba(240, 253, 244, 0.95) 50%, rgba(240, 249, 255, 0.95) 100%);
 }
 
+html,
+body {
+  overflow-x: hidden;
+  max-width: 100vw;
+}
+
 [data-theme='dark'] {
   --background: #0f172a;
   --foreground: #f1f5f9;
@@ -1117,14 +1123,17 @@ body:has(.no-sidebar) .admin-content {
   .leaf-pattern {
     margin-left: 0 !important;
     padding-left: 0 !important;
+    width: 100% !important;
   }
 
   .hero-gradient,
   .cta-section,
-  .site-footer {
+  .site-footer,
+  .section-wrapper {
     margin-left: 0 !important;
     padding-left: 20px !important;
     padding-right: 20px !important;
+    width: 100% !important;
   }
 
   .mobile-bottom-nav {
@@ -1155,7 +1164,9 @@ body:has(.no-sidebar) .admin-content {
 
 @media (max-width: 1024px) {
   .page-container {
-    padding: 40px 24px 80px;
+    margin-left: 0 !important;
+    padding: 40px 24px 80px !important;
+    width: 100% !important;
   }
 }
 
