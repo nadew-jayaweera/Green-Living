@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { User, TreePine, Award, Image, MessageCircle, Calendar, Camera } from "lucide-react";
 import Link from "next/link";
+import { useToast } from "@/contexts/ToastContext";
 
 interface Upload {
     id: string;
@@ -33,6 +34,7 @@ interface Post {
 export default function ProfilePage() {
     const { data: session, status, update } = useSession();
     const router = useRouter();
+    const { addToast } = useToast();
     const [uploads, setUploads] = useState<Upload[]>([]);
     const [badges, setBadges] = useState<Badge[]>([]);
     const [treeCount, setTreeCount] = useState(0);
@@ -43,8 +45,6 @@ export default function ProfilePage() {
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
-    const [saveError, setSaveError] = useState<string | null>(null);
-    const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
     const [showAvatarOverlay, setShowAvatarOverlay] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
     const fileInputRef = useRef<HTMLInputElement | null>(null);
@@ -99,8 +99,6 @@ export default function ProfilePage() {
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] || null;
         setSelectedImage(file);
-        setSaveSuccess(null);
-        setSaveError(null);
     };
 
     const handleAvatarClick = () => {
@@ -112,13 +110,11 @@ export default function ProfilePage() {
 
         // Validate that we have something to save
         if (!profileName.trim() && !selectedImage) {
-            setSaveError("Please change your name or select a new photo");
+            addToast("Please change your name or select a new photo", "error");
             return;
         }
 
         setIsSaving(true);
-        setSaveError(null);
-        setSaveSuccess(null);
 
         try {
             const formData = new FormData();
@@ -147,11 +143,11 @@ export default function ProfilePage() {
             setProfileImage(data.user.image || null);
             setSelectedImage(null);
             setAvatarPreview(null);
-            setSaveSuccess("Profile updated successfully!");
+            addToast("Profile updated successfully!", "success");
             await update({ user: { name: data.user.name, image: data.user.image } });
         } catch (error) {
             console.error("Profile save error:", error);
-            setSaveError(error instanceof Error ? error.message : "Failed to update profile");
+            addToast(error instanceof Error ? error.message : "Failed to update profile", "error");
         } finally {
             setIsSaving(false);
         }
@@ -250,8 +246,6 @@ export default function ProfilePage() {
                                     value={profileName}
                                     onChange={(event) => {
                                         setProfileName(event.target.value);
-                                        setSaveSuccess(null);
-                                        setSaveError(null);
                                     }}
                                     placeholder="Enter your name"
                                     disabled={isSaving}
@@ -263,12 +257,6 @@ export default function ProfilePage() {
                                 </div>
                             )}
                         </div>
-
-                        {(saveError || saveSuccess) && (
-                            <div style={{ marginTop: "12px", color: saveError ? "#dc2626" : "#2d6a4f", fontWeight: 600 }}>
-                                {saveError || saveSuccess}
-                            </div>
-                        )}
 
                         {(profileName.trim() !== (session.user?.name || "") || selectedImage) && (
                             <div style={{ marginTop: "16px", display: "flex", justifyContent: "flex-end" }}>

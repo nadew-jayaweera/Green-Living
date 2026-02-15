@@ -5,27 +5,27 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { UserPlus, Mail, Lock, User, Leaf, ArrowRight } from "lucide-react";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function RegisterPage() {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { addToast } = useToast();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
 
         if (password !== confirmPassword) {
-            setError("Passwords do not match");
+            addToast("Passwords do not match", "error");
             return;
         }
 
         if (password.length < 6) {
-            setError("Password must be at least 6 characters");
+            addToast("Password must be at least 6 characters", "error");
             return;
         }
 
@@ -41,10 +41,12 @@ export default function RegisterPage() {
             const data = await res.json();
 
             if (!res.ok) {
-                setError(data.error);
+                addToast(data.error || "Registration failed", "error");
                 setLoading(false);
                 return;
             }
+
+            addToast("Account created successfully! 🌱", "success");
 
             // Auto sign in after registration
             const signInResult = await signIn("credentials", {
@@ -56,13 +58,13 @@ export default function RegisterPage() {
             setLoading(false);
 
             if (signInResult?.error) {
-                setError(signInResult.error);
+                addToast(signInResult.error, "error");
             } else {
                 router.push("/");
                 router.refresh();
             }
         } catch {
-            setError("Something went wrong");
+            addToast("Something went wrong", "error");
             setLoading(false);
         }
     };
@@ -82,17 +84,6 @@ export default function RegisterPage() {
                     <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", marginBottom: "8px" }}>Join Green Living</h1>
                     <p style={{ color: "#6b7280" }}>Create your account and start planting</p>
                 </div>
-
-                {/* Error */}
-                {error && (
-                    <div style={{
-                        background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)",
-                        borderRadius: "12px", padding: "12px 16px", marginBottom: "20px",
-                        color: "#dc2626", fontSize: "0.9rem", fontWeight: 500,
-                    }}>
-                        {error}
-                    </div>
-                )}
 
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: "20px" }}>

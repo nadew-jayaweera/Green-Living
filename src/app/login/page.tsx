@@ -5,17 +5,17 @@ import { signIn } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Link from "next/link";
 import { LogIn, Mail, Lock, Leaf, ArrowRight } from "lucide-react";
+import { useToast } from "@/contexts/ToastContext";
 
 export default function LoginPage() {
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const [error, setError] = useState("");
     const [loading, setLoading] = useState(false);
     const router = useRouter();
+    const { addToast } = useToast();
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
-        setError("");
         setLoading(true);
 
         const result = await signIn("credentials", {
@@ -27,8 +27,9 @@ export default function LoginPage() {
         setLoading(false);
 
         if (result?.error) {
-            setError(result.error);
+            addToast(result.error, "error");
         } else {
+            addToast("Welcome back! 🌿", "success");
             router.push("/");
             router.refresh();
         }
@@ -49,17 +50,6 @@ export default function LoginPage() {
                     <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", marginBottom: "8px" }}>Welcome Back</h1>
                     <p style={{ color: "#6b7280" }}>Sign in to continue your green journey</p>
                 </div>
-
-                {/* Error */}
-                {error && (
-                    <div style={{
-                        background: "rgba(239,68,68,0.1)", border: "1px solid rgba(239,68,68,0.2)",
-                        borderRadius: "12px", padding: "12px 16px", marginBottom: "20px",
-                        color: "#dc2626", fontSize: "0.9rem", fontWeight: 500,
-                    }}>
-                        {error}
-                    </div>
-                )}
 
                 <form onSubmit={handleSubmit}>
                     <div style={{ marginBottom: "20px" }}>

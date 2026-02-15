@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
+import { ToastProvider } from "@/contexts/ToastContext";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
 
@@ -39,13 +40,15 @@ export default function RootLayout({
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
       >
         <SessionProvider>
-          <Sidebar />
-          <div className="admin-content" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-            <main className="leaf-pattern" style={{ flex: 1 }}>
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <ToastProvider>
+            <Sidebar />
+            <div className="admin-content" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+              <main className="leaf-pattern" style={{ flex: 1 }}>
+                {children}
+              </main>
+              <Footer />
+            </div>
+          </ToastProvider>
         </SessionProvider>
       </body>
     </html>
