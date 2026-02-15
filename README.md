@@ -5,6 +5,9 @@ A modern, full-stack Next.js application dedicated to promoting sustainability a
 ## 🚀 Live Demo
 **Check it out here**: [https://green-living-sand.vercel.app/](https://green-living-sand.vercel.app/)
 
+> [!NOTE]
+> This link is a **frontend sandbox demo**. Real-time backend features (database, auth, image storage) are not functional in this preview.
+
 ## ✅ Recent Updates (This Branch)
 
 ### 🌓 Dark Mode & Themability
