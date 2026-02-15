@@ -115,7 +115,7 @@ export default function HomePage() {
       </section>
 
       {/* ===== STATS SECTION ===== */}
-      <section style={{ padding: "80px 24px", background: "var(--color-cream)" }}>
+      <section style={{ padding: "80px 24px", background: "linear-gradient(135deg, #f0fdf4 0%, #f0f9ff 50%, #fef3c7 100%)" }}>
         <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
           <h2 className="section-title">Our Impact</h2>
           <p className="section-subtitle">Every tree planted is a step toward a healthier planet</p>
@@ -177,7 +177,7 @@ export default function HomePage() {
       </section>
 
       {/* ===== FEATURES SECTION ===== */}
-      <section style={{ padding: "80px 24px", background: "var(--color-cream)" }}>
+      <section style={{ padding: "80px 24px", background: "linear-gradient(135deg, #fef3c7 0%, #f0f9ff 50%, #f3f4f6 100%)" }}>
         <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
           <h2 className="section-title">Platform Features</h2>
           <p className="section-subtitle">Everything you need to make a green impact</p>

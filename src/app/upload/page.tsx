@@ -161,7 +161,7 @@ export default function UploadPage() {
                                     <img src={preview} alt="Preview" style={{ width: "100%", maxHeight: "300px", objectFit: "cover", borderRadius: "14px" }} />
                                 ) : (
                                     <>
-                                        <Upload size={40} style={{ color: "#52b788", marginBottom: "12px" }} />
+                                        <Upload size={40} style={{ color: "#52b788", marginBottom: "12px", display: "block", margin: "0 auto 12px" }} />
                                         <p style={{ color: "#6b7280", fontWeight: 500 }}>Click to upload your tree photo</p>
                                         <p style={{ color: "#9ca3af", fontSize: "0.85rem", marginTop: "4px" }}>Max 5MB, JPG/PNG</p>
                                     </>
@@ -200,7 +200,7 @@ export default function UploadPage() {
                         </div>
 
                         <button type="submit" className="btn-primary" disabled={loading}
-                            style={{ width: "100%", justifyContent: "center", padding: "16px", fontSize: "1rem" }}>
+                            style={{ width: "100%", justifyContent: "center", padding: "16px", fontSize: "1rem", display: "flex", alignItems: "center", gap: "8px" }}>
                             {loading ? "Uploading..." : <><Upload size={20} /> Upload Tree</>}
                         </button>
                     </form>
