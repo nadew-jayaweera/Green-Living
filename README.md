@@ -2,6 +2,9 @@
 
 A modern, full-stack Next.js application dedicated to promoting sustainability and community engagement through tree planting. Users can track their contributions, earn badges, and share their green journey with a like-minded community.
 
+## 🚀 Live Demo
+**Check it out here**: [https://green-living-sand.vercel.app/](https://green-living-sand.vercel.app/)
+
 ## ✅ Recent Updates (This Branch)
 
 ### 🌓 Dark Mode & Themability
