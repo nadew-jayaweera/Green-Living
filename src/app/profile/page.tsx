@@ -1,9 +1,9 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { User, TreePine, Award, Image, MessageCircle, Calendar } from "lucide-react";
+import { User, TreePine, Award, Image, MessageCircle, Calendar, Camera } from "lucide-react";
 import Link from "next/link";
 
 interface Upload {
@@ -31,13 +31,23 @@ interface Post {
 }
 
 export default function ProfilePage() {
-    const { data: session, status } = useSession();
+    const { data: session, status, update } = useSession();
     const router = useRouter();
     const [uploads, setUploads] = useState<Upload[]>([]);
     const [badges, setBadges] = useState<Badge[]>([]);
     const [treeCount, setTreeCount] = useState(0);
     const [posts, setPosts] = useState<Post[]>([]);
     const [activeTab, setActiveTab] = useState<"uploads" | "badges" | "posts">("uploads");
+    const [profileName, setProfileName] = useState("");
+    const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [selectedImage, setSelectedImage] = useState<File | null>(null);
+    const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
+    const [isSaving, setIsSaving] = useState(false);
+    const [saveError, setSaveError] = useState<string | null>(null);
+    const [saveSuccess, setSaveSuccess] = useState<string | null>(null);
+    const [showAvatarOverlay, setShowAvatarOverlay] = useState(false);
+    const [isHydrated, setIsHydrated] = useState(false);
+    const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
         if (status === "authenticated" && session?.user) {
@@ -60,8 +70,92 @@ export default function ProfilePage() {
         }
     }, [session, status]);
 
+    useEffect(() => {
+        setIsHydrated(true);
+    }, []);
+
+    useEffect(() => {
+        if (session?.user) {
+            setProfileName(session.user.name || "");
+            setProfileImage(session.user.image || null);
+        }
+    }, [session]);
+
+    useEffect(() => {
+        if (!selectedImage) {
+            setAvatarPreview(null);
+            return;
+        }
+
+        const previewUrl = URL.createObjectURL(selectedImage);
+        setAvatarPreview(previewUrl);
+
+        return () => URL.revokeObjectURL(previewUrl);
+    }, [selectedImage]);
+
     if (status === "loading") return <div style={{ padding: "100px", textAlign: "center" }}>Loading...</div>;
     if (!session) { router.push("/login"); return null; }
+
+    const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        const file = event.target.files?.[0] || null;
+        setSelectedImage(file);
+        setSaveSuccess(null);
+        setSaveError(null);
+    };
+
+    const handleAvatarClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleSaveProfile = async (event: React.FormEvent) => {
+        event.preventDefault();
+        
+        // Validate that we have something to save
+        if (!profileName.trim() && !selectedImage) {
+            setSaveError("Please change your name or select a new photo");
+            return;
+        }
+
+        setIsSaving(true);
+        setSaveError(null);
+        setSaveSuccess(null);
+
+        try {
+            const formData = new FormData();
+            if (profileName.trim()) {
+                formData.append("name", profileName.trim());
+            }
+            if (selectedImage) {
+                formData.append("image", selectedImage);
+            }
+
+            console.log("Submitting profile update with selectedImage:", !!selectedImage, "name:", profileName.trim());
+
+            const response = await fetch("/api/profile", {
+                method: "POST",
+                body: formData,
+            });
+
+            const data = await response.json();
+            console.log("Profile API response:", response.status, data);
+            
+            if (!response.ok) {
+                throw new Error(data?.error || "Failed to update profile");
+            }
+
+            setProfileName(data.user.name || "");
+            setProfileImage(data.user.image || null);
+            setSelectedImage(null);
+            setAvatarPreview(null);
+            setSaveSuccess("Profile updated successfully!");
+            await update({ user: { name: data.user.name, image: data.user.image } });
+        } catch (error) {
+            console.error("Profile save error:", error);
+            setSaveError(error instanceof Error ? error.message : "Failed to update profile");
+        } finally {
+            setIsSaving(false);
+        }
+    };
 
     const tabs = [
         { key: "uploads", label: "My Trees", icon: <Image size={18} />, count: treeCount },
@@ -72,18 +166,62 @@ export default function ProfilePage() {
     return (
         <div style={{ maxWidth: "1000px", margin: "0 auto", padding: "40px 24px 80px" }}>
             {/* Profile Header */}
+            {isHydrated && (
             <div className="glass-card animate-fade-in-up" style={{ padding: "40px", textAlign: "center", marginBottom: "32px" }}>
-                <div style={{
-                    width: "100px", height: "100px", borderRadius: "50%",
-                    background: "linear-gradient(135deg, #2d6a4f, #52b788)",
-                    display: "flex", alignItems: "center", justifyContent: "center",
-                    margin: "0 auto 16px", color: "white", fontSize: "2.5rem", fontWeight: 700,
-                }}>
-                    {session.user?.name?.charAt(0)?.toUpperCase() || "U"}
-                </div>
+                <button
+                    type="button"
+                    onClick={handleAvatarClick}
+                    onMouseEnter={() => setShowAvatarOverlay(true)}
+                    onMouseLeave={() => setShowAvatarOverlay(false)}
+                    title="Change profile photo"
+                    style={{
+                        width: "100px", height: "100px", borderRadius: "50%",
+                        background: "linear-gradient(135deg, #2d6a4f, #52b788)",
+                        display: "flex", alignItems: "center", justifyContent: "center",
+                        margin: "0 auto 16px", color: "white", fontSize: "2.5rem", fontWeight: 700,
+                        border: "none",
+                        padding: 0,
+                        cursor: "pointer",
+                        overflow: "hidden",
+                        position: "relative",
+                    }}>
+                    {avatarPreview || profileImage ? (
+                        <img
+                            src={avatarPreview || profileImage || ""}
+                            alt="User avatar"
+                            style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+                        />
+                    ) : (
+                        session.user?.name?.charAt(0)?.toUpperCase() || "U"
+                    )}
+                    <span
+                        style={{
+                            position: "absolute",
+                            inset: 0,
+                            background: "rgba(0, 0, 0, 0.45)",
+                            color: "white",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            opacity: showAvatarOverlay ? 1 : 0,
+                            transition: "opacity 0.2s ease",
+                        }}
+                        aria-hidden
+                    >
+                        <Camera size={22} />
+                    </span>
+                </button>
+                <input
+                    ref={fileInputRef}
+                    type="file"
+                    accept="image/*"
+                    onChange={handleImageChange}
+                    style={{ display: "none" }}
+                    disabled={isSaving}
+                />
 
                 <h1 style={{ fontSize: "1.8rem", fontWeight: 800, color: "#1a4d2e", marginBottom: "4px" }}>
-                    {session.user?.name}
+                    {profileName || session.user?.name}
                 </h1>
                 <p style={{ color: "#6b7280", marginBottom: "20px" }}>{session.user?.email}</p>
 
@@ -101,7 +239,47 @@ export default function ProfilePage() {
                         <div style={{ fontSize: "0.85rem", color: "#6b7280", fontWeight: 500 }}>Forum Posts</div>
                     </div>
                 </div>
+
+                <form onSubmit={handleSaveProfile} style={{ marginTop: "28px", textAlign: "left" }}>
+                    <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "14px" }}>
+                        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+                            <label style={{ fontSize: "0.9rem", color: "#374151", fontWeight: 600 }}>User Name</label>
+                            <input
+                                className="form-input"
+                                type="text"
+                                value={profileName}
+                                onChange={(event) => {
+                                    setProfileName(event.target.value);
+                                    setSaveSuccess(null);
+                                    setSaveError(null);
+                                }}
+                                placeholder="Enter your name"
+                                disabled={isSaving}
+                            />
+                        </div>
+                        {selectedImage && (
+                            <div style={{ fontSize: "0.9rem", color: "#52b788", padding: "8px 12px", background: "rgba(82, 183, 136, 0.1)", borderRadius: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
+                                ✓ Image ready to upload: {selectedImage.name}
+                            </div>
+                        )}
+                    </div>
+
+                    {(saveError || saveSuccess) && (
+                        <div style={{ marginTop: "12px", color: saveError ? "#dc2626" : "#2d6a4f", fontWeight: 600 }}>
+                            {saveError || saveSuccess}
+                        </div>
+                    )}
+
+                    {(profileName.trim() !== (session.user?.name || "") || selectedImage) && (
+                        <div style={{ marginTop: "16px", display: "flex", justifyContent: "flex-end" }}>
+                            <button type="submit" className="btn-primary" disabled={isSaving}>
+                                {isSaving ? "Saving..." : "Save Changes"}
+                            </button>
+                        </div>
+                    )}
+                </form>
             </div>
+            )}
 
             {/* Tabs */}
             <div style={{ display: "flex", gap: "8px", marginBottom: "24px", overflowX: "auto" }}>

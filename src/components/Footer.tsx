@@ -6,8 +6,8 @@ import Link from "next/link";
 export default function Footer() {
     return (
         <footer
+            className="site-footer"
             style={{
-                background: "linear-gradient(135deg, #1a4d2e 0%, #2d6a4f 100%)",
                 color: "white",
                 padding: "60px 24px 30px",
                 marginTop: "auto",
@@ -27,7 +27,7 @@ export default function Footer() {
                     <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
                         <span
                             style={{
-                                background: "rgba(255, 255, 255, 0.15)",
+                                background: "rgba(230, 230, 230, 0.2)",
                                 borderRadius: "12px",
                                 padding: "8px",
                                 display: "flex",

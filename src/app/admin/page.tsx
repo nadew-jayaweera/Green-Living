@@ -215,7 +215,7 @@ export default function AdminPage() {
                                     const isUserMainAdmin = user.email === data.mainAdminEmail;
                                     return (
                                         <tr key={user.id} style={{ transition: "all 0.2s ease" }} className="hover:bg-green-50/50">
-                                            <td style={{ padding: "12px 16px", background: "white", borderTopLeftRadius: "12px", borderBottomLeftRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", borderTopLeftRadius: "12px", borderBottomLeftRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
                                                     <div style={{
                                                         width: "36px", height: "36px", borderRadius: "10px",
@@ -233,12 +233,12 @@ export default function AdminPage() {
                                                     </div>
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "white", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "6px", color: "#4b5563", fontSize: "0.9rem" }}>
                                                     <Mail size={14} /> {user.email}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "white", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <span style={{
                                                     padding: "4px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.02em",
                                                     background: user.role === "ADMIN" ? "rgba(220,38,38,0.1)" : "rgba(82,183,136,0.15)",
@@ -248,30 +248,30 @@ export default function AdminPage() {
                                                     {user.role}
                                                 </span>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "white", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#2d6a4f" }}>
                                                     <div style={{ background: "rgba(82,183,136,0.1)", padding: "4px", borderRadius: "50%" }}><TreePine size={14} /></div>
                                                     {user._count.uploads}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "white", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#d97706" }}>
                                                     <div style={{ background: "rgba(245,158,11,0.1)", padding: "4px", borderRadius: "50%" }}><Award size={14} /></div>
                                                     {user._count.badges}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "white", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#0284c7" }}>
                                                     <div style={{ background: "rgba(14,165,233,0.1)", padding: "4px", borderRadius: "50%" }}><MessageCircle size={14} /></div>
                                                     {user._count.forumPosts}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "white", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ color: "#6b7280", fontSize: "0.85rem" }}>
                                                     {new Date(user.createdAt).toLocaleDateString(undefined, { month: 'short', day: 'numeric', year: 'numeric' })}
                                                 </div>
                                             </td>
-                                            <td style={{ padding: "12px 16px", background: "white", borderTopRightRadius: "12px", borderBottomRightRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", borderTopRightRadius: "12px", borderBottomRightRadius: "12px", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", gap: "6px", alignItems: "center" }}>
                                                     {isUserMainAdmin ? (
                                                         <span style={{ fontSize: "0.75rem", color: "#6b7280", fontStyle: "italic", fontWeight: 500 }}>Protected</span>

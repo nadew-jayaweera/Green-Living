@@ -10,10 +10,6 @@ import {
     Image,
     MessageCircle,
     Settings,
-    Moon,
-    Sun,
-    ChevronLeft,
-    ChevronRight,
     MoreHorizontal,
 } from "lucide-react";
 
@@ -25,8 +21,7 @@ interface AdminSidebarProps {
 
 export default function AdminSidebar({ activeTab, onTabChange, pendingCount = 0 }: AdminSidebarProps) {
     const { data: session } = useSession();
-    const [collapsed, setCollapsed] = useState(false);
-    const [darkMode, setDarkMode] = useState(false);
+    const [collapsed, setCollapsed] = useState(true);
 
     const navItems = [
         { key: "overview" as const, label: "Dashboard", icon: <LayoutDashboard size={20} /> },
@@ -39,7 +34,11 @@ export default function AdminSidebar({ activeTab, onTabChange, pendingCount = 0 
     const userEmail = (session?.user as { email?: string })?.email || "admin@greenlife.com";
 
     return (
-        <aside className={`admin-sidebar ${collapsed ? "admin-sidebar-collapsed" : ""}`}>
+        <aside
+            className={`admin-sidebar ${collapsed ? "admin-sidebar-collapsed" : ""}`}
+            onMouseEnter={() => setCollapsed(false)}
+            onMouseLeave={() => setCollapsed(true)}
+        >
             {/* Logo */}
             <div className="sidebar-logo">
                 <div className="sidebar-logo-icon">
@@ -79,22 +78,6 @@ export default function AdminSidebar({ activeTab, onTabChange, pendingCount = 0 
                     {!collapsed && <span className="sidebar-nav-label">Settings</span>}
                 </Link>
 
-                {/* Dark Mode Toggle */}
-                <div className="sidebar-toggle-row">
-                    {!collapsed && <span className="sidebar-toggle-label">Dark Mode</span>}
-                    <button
-                        className="sidebar-dark-toggle"
-                        onClick={() => setDarkMode(!darkMode)}
-                        title="Toggle dark mode"
-                    >
-                        <span className={`sidebar-toggle-track ${darkMode ? "sidebar-toggle-active" : ""}`}>
-                            <span className="sidebar-toggle-thumb">
-                                {darkMode ? <Moon size={12} /> : <Sun size={12} />}
-                            </span>
-                        </span>
-                    </button>
-                </div>
-
                 {/* User Profile */}
                 <div className="sidebar-profile">
                     <div className="sidebar-profile-avatar">
@@ -114,14 +97,6 @@ export default function AdminSidebar({ activeTab, onTabChange, pendingCount = 0 
                 </div>
             </div>
 
-            {/* Collapse Toggle */}
-            <button
-                className="sidebar-collapse-btn"
-                onClick={() => setCollapsed(!collapsed)}
-                title={collapsed ? "Expand sidebar" : "Collapse sidebar"}
-            >
-                {collapsed ? <ChevronRight size={16} /> : <ChevronLeft size={16} />}
-            </button>
         </aside>
     );
 }
