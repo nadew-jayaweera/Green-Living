@@ -739,7 +739,8 @@ body:has(.no-sidebar) .admin-content {
   height: calc(100vh - 24px);
   width: 280px;
   background: var(--sidebar-bg);
-  backdrop-filter: blur(10px);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
   border: 1px solid rgba(200, 200, 200, 0.25);
   display: flex;
   flex-direction: column;
@@ -1087,7 +1088,6 @@ body:has(.no-sidebar) .admin-content {
   /* Fixed to collapsed space */
   min-height: 100vh;
   padding: 0;
-  background: var(--background);
 }
 
 /* Removed content push logic to prevent layout jitter on hover */
