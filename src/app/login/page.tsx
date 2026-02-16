@@ -35,7 +35,7 @@ export default function LoginPage() {
     };
 
     return (
-        <div style={{ minHeight: "80vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}>
+        <div style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", padding: "40px 24px" }}>
             <div className="glass-card animate-fade-in-up" style={{ maxWidth: "460px", width: "100%", padding: "48px 40px" }}>
                 {/* Header */}
                 <div style={{ textAlign: "center", marginBottom: "36px" }}>

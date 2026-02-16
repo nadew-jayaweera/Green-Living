@@ -11,6 +11,8 @@ export default function Footer() {
                 color: "white",
                 padding: "60px 24px 30px",
                 marginTop: "auto",
+                position: "relative",
+                overflow: "hidden",
             }}
         >
             <div

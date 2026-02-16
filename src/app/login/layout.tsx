@@ -3,5 +3,5 @@ export default function LoginLayout({
 }: {
     children: React.ReactNode;
 }) {
-    return <div className="no-sidebar">{children}</div>;
+    return <>{children}</>;
 }
