@@ -3,7 +3,7 @@
 import { useState, useEffect, useRef } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { User, TreePine, Award, Image, MessageCircle, Calendar, Camera } from "lucide-react";
+import { User, TreePine, Award, Image, MessageCircle, Calendar, Camera, MapPin, FileText, Trash2, AlertTriangle, X } from "lucide-react";
 import Link from "next/link";
 import { useToast } from "@/contexts/ToastContext";
 
@@ -40,13 +40,24 @@ export default function ProfilePage() {
     const [treeCount, setTreeCount] = useState(0);
     const [posts, setPosts] = useState<Post[]>([]);
     const [activeTab, setActiveTab] = useState<"uploads" | "badges" | "posts">("uploads");
+
+    // Profile Edit State
     const [profileName, setProfileName] = useState("");
     const [profileImage, setProfileImage] = useState<string | null>(null);
+    const [bio, setBio] = useState("");
+    const [location, setLocation] = useState("");
+
     const [selectedImage, setSelectedImage] = useState<File | null>(null);
     const [avatarPreview, setAvatarPreview] = useState<string | null>(null);
     const [isSaving, setIsSaving] = useState(false);
     const [showAvatarOverlay, setShowAvatarOverlay] = useState(false);
     const [isHydrated, setIsHydrated] = useState(false);
+
+    // Delete Modal State
+    const [deleteModalOpen, setDeleteModalOpen] = useState(false);
+    const [uploadToDelete, setUploadToDelete] = useState<string | null>(null);
+    const [isDeleting, setIsDeleting] = useState(false);
+
     const fileInputRef = useRef<HTMLInputElement | null>(null);
 
     useEffect(() => {
@@ -67,6 +78,12 @@ export default function ProfilePage() {
                     const userPosts = (d.posts || []).filter((p: { user: { id: string } }) => p.user.id === userId);
                     setPosts(userPosts);
                 });
+
+            // Load Bio/Location from localStorage (Simulation)
+            const savedBio = localStorage.getItem(`user_bio_${userId}`);
+            const savedLoc = localStorage.getItem(`user_location_${userId}`);
+            if (savedBio) setBio(savedBio);
+            if (savedLoc) setLocation(savedLoc);
         }
     }, [session, status]);
 
@@ -109,14 +126,19 @@ export default function ProfilePage() {
         event.preventDefault();
 
         // Validate that we have something to save
-        if (!profileName.trim() && !selectedImage) {
-            addToast("Please change your name or select a new photo", "error");
+        if (!profileName.trim() && !selectedImage && !bio && !location) {
+            addToast("No changes to save", "info");
             return;
         }
 
         setIsSaving(true);
 
         try {
+            // Save Bio/Location to localStorage (simulating DB persistence)
+            const userId = (session.user as { id: string }).id;
+            localStorage.setItem(`user_bio_${userId}`, bio);
+            localStorage.setItem(`user_location_${userId}`, location);
+
             const formData = new FormData();
             if (profileName.trim()) {
                 formData.append("name", profileName.trim());
@@ -125,31 +147,66 @@ export default function ProfilePage() {
                 formData.append("image", selectedImage);
             }
 
-            console.log("Submitting profile update with selectedImage:", !!selectedImage, "name:", profileName.trim());
+            // Only call API if name or image changed
+            if (profileName.trim() !== session.user?.name || selectedImage) {
+                const response = await fetch("/api/profile", {
+                    method: "POST",
+                    body: formData,
+                });
 
-            const response = await fetch("/api/profile", {
-                method: "POST",
-                body: formData,
-            });
+                const data = await response.json();
 
-            const data = await response.json();
-            console.log("Profile API response:", response.status, data);
+                if (!response.ok) {
+                    throw new Error(data?.error || "Failed to update profile");
+                }
 
-            if (!response.ok) {
-                throw new Error(data?.error || "Failed to update profile");
+                setProfileName(data.user.name || "");
+                setProfileImage(data.user.image || null);
+                setSelectedImage(null);
+                setAvatarPreview(null);
+                await update({ user: { name: data.user.name, image: data.user.image } });
             }
 
-            setProfileName(data.user.name || "");
-            setProfileImage(data.user.image || null);
-            setSelectedImage(null);
-            setAvatarPreview(null);
             addToast("Profile updated successfully!", "success");
-            await update({ user: { name: data.user.name, image: data.user.image } });
         } catch (error) {
             console.error("Profile save error:", error);
             addToast(error instanceof Error ? error.message : "Failed to update profile", "error");
         } finally {
             setIsSaving(false);
+        }
+    };
+
+    const openDeleteModal = (uploadId: string) => {
+        setUploadToDelete(uploadId);
+        setDeleteModalOpen(true);
+    };
+
+    const closeDeleteModal = () => {
+        setDeleteModalOpen(false);
+        setUploadToDelete(null);
+    };
+
+    const handleDeleteConfirm = async () => {
+        if (!uploadToDelete) return;
+        setIsDeleting(true);
+
+        try {
+            const res = await fetch(`/api/uploads?id=${uploadToDelete}`, {
+                method: "DELETE",
+            });
+            const data = await res.json();
+
+            if (!res.ok) throw new Error(data.error || "Failed to delete");
+
+            setUploads(prev => prev.filter(u => u.id !== uploadToDelete));
+            setTreeCount(prev => Math.max(0, prev - 1));
+            addToast("Tree deleted successfully", "success");
+            closeDeleteModal();
+        } catch (error) {
+            console.error("Delete error:", error);
+            addToast("Failed to delete tree", "error");
+        } finally {
+            setIsDeleting(false);
         }
     };
 
@@ -180,10 +237,10 @@ export default function ProfilePage() {
                             title="Change profile photo"
                             style={{
                                 width: "100px", height: "100px", borderRadius: "50%",
-                                background: "linear-gradient(135deg, #2d6a4f, #52b788)",
+                                background: "var(--color-cream)",
+                                border: "2px solid var(--color-forest)",
                                 display: "flex", alignItems: "center", justifyContent: "center",
-                                margin: "0 auto 16px", color: "white", fontSize: "2.5rem", fontWeight: 700,
-                                border: "none",
+                                margin: "0 auto 16px", color: "var(--color-forest)", fontSize: "2.5rem", fontWeight: 700,
                                 padding: 0,
                                 cursor: "pointer",
                                 overflow: "hidden",
@@ -193,7 +250,7 @@ export default function ProfilePage() {
                                 <img
                                     src={avatarPreview || profileImage || ""}
                                     alt="User avatar"
-                                    style={{ width: "100%", height: "100%", objectFit: "cover", borderRadius: "50%" }}
+                                    style={{ width: "100%", height: "100%", objectFit: "cover" }}
                                 />
                             ) : (
                                 session.user?.name?.charAt(0)?.toUpperCase() || "U"
@@ -244,35 +301,54 @@ export default function ProfilePage() {
                             </div>
                         </div>
 
-                        <form onSubmit={handleSaveProfile} style={{ marginTop: "28px", textAlign: "left" }}>
-                            <div style={{ display: "grid", gridTemplateColumns: "1fr", gap: "14px" }}>
-                                <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
-                                    <label style={{ fontSize: "0.9rem", color: "var(--text-primary)", fontWeight: 600 }}>User Name</label>
+                        <form onSubmit={handleSaveProfile} style={{ marginTop: "28px", textAlign: "left", maxWidth: "400px", margin: "28px auto 0" }}>
+                            <div style={{ display: "grid", gap: "16px" }}>
+                                <div>
+                                    <label className="form-label" style={{ marginBottom: "6px" }}><User size={14} style={{ display: "inline", marginRight: "4px" }} /> Display Name</label>
                                     <input
                                         className="form-input"
                                         type="text"
                                         value={profileName}
-                                        onChange={(event) => {
-                                            setProfileName(event.target.value);
-                                        }}
+                                        onChange={(e) => setProfileName(e.target.value)}
                                         placeholder="Enter your name"
                                         disabled={isSaving}
                                     />
                                 </div>
+
+                                <div>
+                                    <label className="form-label" style={{ marginBottom: "6px" }}><FileText size={14} style={{ display: "inline", marginRight: "4px" }} /> Bio</label>
+                                    <input
+                                        className="form-input"
+                                        type="text"
+                                        value={bio}
+                                        onChange={(e) => setBio(e.target.value)}
+                                        placeholder="Short bio about yourself..."
+                                        disabled={isSaving}
+                                    />
+                                </div>
+
+                                <div>
+                                    <label className="form-label" style={{ marginBottom: "6px" }}><MapPin size={14} style={{ display: "inline", marginRight: "4px" }} /> Location</label>
+                                    <input
+                                        className="form-input"
+                                        type="text"
+                                        value={location}
+                                        onChange={(e) => setLocation(e.target.value)}
+                                        placeholder="City, Country"
+                                        disabled={isSaving}
+                                    />
+                                </div>
+
                                 {selectedImage && (
                                     <div style={{ fontSize: "0.9rem", color: "#52b788", padding: "8px 12px", background: "rgba(82, 183, 136, 0.1)", borderRadius: "8px", display: "flex", alignItems: "center", gap: "8px" }}>
                                         ✓ Image ready to upload: {selectedImage.name}
                                     </div>
                                 )}
-                            </div>
 
-                            {(profileName.trim() !== (session.user?.name || "") || selectedImage) && (
-                                <div style={{ marginTop: "16px", display: "flex", justifyContent: "flex-end" }}>
-                                    <button type="submit" className="btn-primary" disabled={isSaving}>
-                                        {isSaving ? "Saving..." : "Save Changes"}
-                                    </button>
-                                </div>
-                            )}
+                                <button type="submit" className="btn-primary" disabled={isSaving} style={{ justifyContent: "center" }}>
+                                    {isSaving ? "Saving..." : "Save Changes"}
+                                </button>
+                            </div>
                         </form>
                     </div>
                 )}
@@ -305,7 +381,7 @@ export default function ProfilePage() {
                         ) : (
                             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(260px, 1fr))", gap: "20px" }}>
                                 {uploads.map((upload) => (
-                                    <div key={upload.id} className="glass-card" style={{ overflow: "hidden" }}>
+                                    <div key={upload.id} className="glass-card group" style={{ overflow: "hidden", position: "relative" }}>
                                         <div style={{ height: "180px", overflow: "hidden" }}>
                                             <img src={upload.imageUrl} alt={upload.treeType}
                                                 style={{ width: "100%", height: "100%", objectFit: "cover" }} />
@@ -317,6 +393,33 @@ export default function ProfilePage() {
                                                 <Calendar size={12} /> {new Date(upload.createdAt).toLocaleDateString()}
                                             </div>
                                         </div>
+
+                                        {/* Delete Button */}
+                                        <button
+                                            onClick={() => openDeleteModal(upload.id)}
+                                            style={{
+                                                position: "absolute",
+                                                top: "10px",
+                                                right: "10px",
+                                                background: "rgba(255,255,255,0.9)",
+                                                border: "none",
+                                                borderRadius: "50%",
+                                                width: "32px",
+                                                height: "32px",
+                                                display: "flex",
+                                                alignItems: "center",
+                                                justifyContent: "center",
+                                                cursor: "pointer",
+                                                color: "#e63946",
+                                                boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                                                transition: "transform 0.2s"
+                                            }}
+                                            title="Delete Upload"
+                                            onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.1)"}
+                                            onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                                        >
+                                            <Trash2 size={16} />
+                                        </button>
                                     </div>
                                 ))}
                             </div>
@@ -490,6 +593,55 @@ export default function ProfilePage() {
                     </div>
                 )}
             </div>
+
+            {/* Delete Confirmation Modal */}
+            {deleteModalOpen && (
+                <div style={{
+                    position: "fixed",
+                    top: 0,
+                    left: 0,
+                    width: "100%",
+                    height: "100%",
+                    background: "rgba(0,0,0,0.5)",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    zIndex: 1000,
+                    backdropFilter: "blur(5px)"
+                }}>
+                    <div className="glass-card animate-fade-in-up" style={{ padding: "32px", maxWidth: "400px", width: "90%", textAlign: "center" }}>
+                        <div style={{
+                            width: "60px", height: "60px", borderRadius: "50%", background: "#fecaca",
+                            color: "#dc2626", display: "flex", alignItems: "center", justifyContent: "center",
+                            margin: "0 auto 16px"
+                        }}>
+                            <AlertTriangle size={32} />
+                        </div>
+                        <h3 style={{ fontSize: "1.25rem", fontWeight: 700, color: "var(--text-primary)", marginBottom: "8px" }}>Delete Tree?</h3>
+                        <p style={{ color: "var(--text-secondary)", marginBottom: "24px", fontSize: "0.95rem" }}>
+                            Are you sure you want to delete this upload? This action cannot be undone.
+                        </p>
+                        <div style={{ display: "flex", gap: "12px" }}>
+                            <button
+                                onClick={closeDeleteModal}
+                                style={{ flex: 1, padding: "12px", border: "1px solid var(--input-border)", borderRadius: "12px", background: "white", cursor: "pointer", fontWeight: 600 }}
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleDeleteConfirm}
+                                disabled={isDeleting}
+                                style={{
+                                    flex: 1, padding: "12px", border: "none", borderRadius: "12px",
+                                    background: "#dc2626", color: "white", cursor: "pointer", fontWeight: 600
+                                }}
+                            >
+                                {isDeleting ? "Deleting..." : "Delete"}
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

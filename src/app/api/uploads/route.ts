@@ -125,3 +125,45 @@ export async function POST(request: Request) {
         return NextResponse.json({ error: "Failed to upload", details: error instanceof Error ? error.message : String(error) }, { status: 500 });
     }
 }
+
+// DELETE: Delete an upload
+export async function DELETE(request: Request) {
+    try {
+        const session = await getServerSession(authOptions);
+        if (!session?.user) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
+        }
+
+        const { searchParams } = new URL(request.url);
+        const id = searchParams.get("id");
+
+        if (!id) {
+            return NextResponse.json({ error: "Upload ID is required" }, { status: 400 });
+        }
+
+        const userId = (session.user as any).id;
+
+        // Verify ownership
+        const upload = await prisma.upload.findUnique({
+            where: { id },
+            select: { userId: true },
+        });
+
+        if (!upload) {
+            return NextResponse.json({ error: "Upload not found" }, { status: 404 });
+        }
+
+        if (upload.userId !== userId) {
+            return NextResponse.json({ error: "You can only delete your own uploads" }, { status: 403 });
+        }
+
+        await prisma.upload.delete({
+            where: { id },
+        });
+
+        return NextResponse.json({ message: "Upload deleted successfully" });
+    } catch (error) {
+        console.error("Delete error:", error);
+        return NextResponse.json({ error: "Failed to delete upload" }, { status: 500 });
+    }
+}

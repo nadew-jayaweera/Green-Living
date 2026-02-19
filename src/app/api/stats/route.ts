@@ -11,7 +11,7 @@ export async function GET() {
                 where: { status: "APPROVED" },
                 include: { user: { select: { name: true } } },
                 orderBy: { createdAt: "desc" },
-                take: 6,
+                take: 12,
             }),
         ]);
 

@@ -10,36 +10,27 @@ A modern, full-stack Next.js application dedicated to promoting sustainability a
 
 ## ✅ Recent Updates (This Branch)
 
-### 🌓 Dark Mode & Themability
-- **Persistent Dark Mode**: System-aware dark mode that saves preferences to `localStorage`, preventing FOUC (Flash of Unstyled Content).
-- **Theme Consistency**: polished spacing, contrast, and color variables across all pages (Admin, Profile, Forum, Upload) for a seamless experience in both light and dark modes.
-- **Glassmorphism UI**: Enhanced sidebar transparency and card backgrounds for a premium, modern aesthetic.
+### 👤 Enhanced Profiles & Personalization
+- **Bio & Location**: Users can now add a personal bio and location to their profiles, allowing for better community connection.
+- **Improved Upload Management**: Added a "Delete" option for personal uploads, protected by a sleek confirmation modal to prevent accidental removal.
+- **Unified Identity**: Standardized avatar displays with consistent fallbacks (initials) across the entire platform.
 
-### ✨ Quality of Life Features
-- **Toast Notifications**: Replaced intrusive alerts with a non-blocking, beautiful toast notification system for success/error messages.
-- **Smart Image Uploads**: Added drag-and-drop support and client-side image compression to optimize performance and user experience.
-- **Location Auto-fill**: integrated Geolocation API to automatically fetch and fill the city/state in the upload form.
-- **Back to Top**: Added a smooth-scrolling "Back to Top" button for easy navigation on long pages.
-- **Mobile Responsiveness**: Fixed layout issues to ensure a perfect experience on mobile devices.
+### 🏆 Gamification & Impact Tracking
+- **Interactive Leaderboard**: Features a "Top 3 Podium" layout to celebrate top contributors and highlights "Your Rank" for logged-in users.
+- **Achievements Page**: A dedicated space to track earned badges (from "Seed Starter" to "Planet Saviour") with direct social sharing functionality.
+- **CO₂ Impact Statistics**: Real-time calculation on the homepage showing total CO₂ absorbed (approx. 20kg/year per tree) to visualize community impact.
 
-### 🧹 Codebase Health
-- **Cleanup**: Removed unused components (`AdminSidebar`), legacy scripts, and boilerplate assets to streamline the project.
-- **Optimization**: improved project structure and removed redundant dependencies.
+### 💬 Community & Social Features
+- **Global Forest Feed**: Increased display to 12 recent uploads and added a "View Full Gallery" link for deeper exploration.
+- **Dynamic Forum**: Support for category-based discussions (Tree Planting, Climate, Recycling) with real-time "time-ago" timestamps and user identity on every post.
+- **Smart Sharing**: Integrated Web Share API and clipboard fallbacks for posts and achievements.
 
-### 🌍 Global Forest Feed & Social Interaction
-- **Community Feed**: A new "Global Forest" page displaying all user-uploaded trees in a sleek card layout.
-- **Engagement System**: Users can now "Like" posts with optimistic UI updates for instant feedback.
-- **Sidebar Overhaul**: Replaced standard icons with a custom nature-themed set and added a dynamic "Admin" link for authorized users.
+### 🎨 Design & Experience Polish
+- **Dark Mode by Default**: Shifted to a premium dark-first experience while maintaining a beautiful light mode alternative.
+- **Skeleton Loading**: Standardized skeleton states across the homepage, feed, and profile for smoother perceived performance.
+- **Optimized Feedback**: Adjusted toast notification duration to 3000ms for perfect readability.
+- **Responsive Navigation**: Enhanced mobile experience with a dedicated bottom navigation bar for seamless one-handed use.
 
-### 🛡️ Professional Admin Dashboard
-- **Content Moderation**: Centralized panel to approve, reject, or delete plant uploads to ensure platform quality.
-- **User Management**: Ability for main admins to promote/demote users to admin status and manage the community list.
-- **Platform Analytics**: Real-time stats for total users, uploads, and pending review counts.
-
-### 🛠️ Robust System Improvements
-- **Upload Fail-safes**: Improved image processing logic with an automatic fallback to base64 if compression or external storage fails.
-- **Auto-Approval**: Implemented self-approval logic for a smoother user experience during the early community phase.
-- **Badge Automation**: Integrated automatic badge checks after every upload, awarding achievements like "Seed Starter" instantly.
 
 ## 🤝 Contributing
 

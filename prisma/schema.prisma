@@ -8,31 +8,31 @@ datasource db {
 }
 
 model User {
-  id            String      @id @default(cuid())
-  name          String
-  email         String      @unique
-  password      String
-  image         String?
-  role          String      @default("USER") // USER | ADMIN
-  createdAt     DateTime    @default(now())
-  uploads       Upload[]
-  badges        UserBadge[]
-  forumPosts    ForumPost[]
-  comments      Comment[]
-  likes         Like[]
-  uploadLikes   UploadLike[]
+  id          String       @id @default(cuid())
+  name        String
+  email       String       @unique
+  password    String
+  image       String?
+  role        String       @default("USER")
+  createdAt   DateTime     @default(now())
+  comments    Comment[]
+  forumPosts  ForumPost[]
+  likes       Like[]
+  uploads     Upload[]
+  uploadLikes UploadLike[]
+  badges      UserBadge[]
 }
 
 model Upload {
-  id          String   @id @default(cuid())
+  id          String       @id @default(cuid())
   userId      String
   imageUrl    String
   location    String
   description String
   treeType    String
-  status      String   @default("PENDING") // PENDING | APPROVED | REJECTED
-  createdAt   DateTime @default(now())
-  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  status      String       @default("PENDING")
+  createdAt   DateTime     @default(now())
+  user        User         @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes       UploadLike[]
 }
 
@@ -50,8 +50,8 @@ model UserBadge {
   userId   String
   badgeId  String
   earnedAt DateTime @default(now())
-  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   badge    Badge    @relation(fields: [badgeId], references: [id], onDelete: Cascade)
+  user     User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, badgeId])
 }
@@ -63,8 +63,8 @@ model ForumPost {
   content   String
   category  String
   createdAt DateTime  @default(now())
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   comments  Comment[]
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   likes     Like[]
 }
 
@@ -74,16 +74,16 @@ model Comment {
   postId    String
   content   String
   createdAt DateTime  @default(now())
-  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   post      ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 }
 
 model Like {
   id     String    @id @default(cuid())
   userId String
   postId String
-  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   post   ForumPost @relation(fields: [postId], references: [id], onDelete: Cascade)
+  user   User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, postId])
 }
@@ -92,8 +92,8 @@ model UploadLike {
   id       String @id @default(cuid())
   userId   String
   uploadId String
-  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
   upload   Upload @relation(fields: [uploadId], references: [id], onDelete: Cascade)
+  user     User   @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, uploadId])
 }

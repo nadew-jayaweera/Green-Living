@@ -1,8 +1,8 @@
 "use client";
 
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect } from "react";
 import Link from "next/link";
-import { TreePine, Users, Camera, ArrowRight, Sprout, Award, MessageCircle, TrendingUp } from "lucide-react";
+import { TreePine, Users, Camera, ArrowRight, Sprout, Award, MessageCircle, TrendingUp, CloudFog } from "lucide-react";
 
 // Animated counter hook
 function useCounter(end: number, duration: number = 2000) {
@@ -43,12 +43,16 @@ export default function HomePage() {
   const treeCounter = useCounter(stats.totalTrees);
   const userCounter = useCounter(stats.totalUsers);
 
+  // CO2 Calculation: 1 tree approx 20kg CO2/year
+  const co2Absorbed = Math.floor(stats.totalTrees * 20);
+  const co2Counter = useCounter(co2Absorbed);
+
   // Stats fetching
   useEffect(() => {
     setIsLoading(true);
     fetch("/api/stats")
       .then((res) => res.json())
-      .then((data) => {
+      .then((data: { totalTrees: number; totalUsers: number; recentUploads: Upload[] }) => {
         setStats({ totalTrees: data.totalTrees || 0, totalUsers: data.totalUsers || 0 });
         setRecentUploads(data.recentUploads || []);
       })
@@ -60,8 +64,8 @@ export default function HomePage() {
   useEffect(() => {
     if (!isLoading && stats.totalTrees > 0) treeCounter.start();
     if (!isLoading && stats.totalUsers > 0) userCounter.start();
-  }, [stats, isLoading]);
-
+    if (!isLoading && co2Absorbed > 0) co2Counter.start();
+  }, [stats, isLoading, co2Absorbed]);
 
   // Scroll Reveal Observer
   useEffect(() => {
@@ -77,7 +81,7 @@ export default function HomePage() {
     elements.forEach((el) => observer.observe(el));
 
     return () => observer.disconnect();
-  }, [recentUploads]); // Re-run when uploads load
+  }, [recentUploads]);
 
   return (
     <div>
@@ -153,35 +157,36 @@ export default function HomePage() {
             <p className="section-subtitle">Every tree planted is a step toward a healthier planet</p>
           </div>
 
-          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(240px, 1fr))", gap: "32px" }}>
+          <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit, minmax(200px, 1fr))", gap: "24px" }}>
             {[
-              { icon: <TreePine size={48} />, value: treeCounter.count || stats.totalTrees, label: "Trees Planted", color: "var(--color-forest)" },
-              { icon: <Users size={48} />, value: userCounter.count || stats.totalUsers, label: "Active Members", color: "var(--color-leaf)" },
-              { icon: <Camera size={48} />, value: recentUploads.length, label: "Recent Uploads", color: "#3b82f6" },
+              { icon: <TreePine size={40} />, value: treeCounter.count || stats.totalTrees, label: "Trees Planted", color: "var(--color-forest)" },
+              { icon: <Users size={40} />, value: userCounter.count || stats.totalUsers, label: "Active Members", color: "var(--color-leaf)" },
+              { icon: <CloudFog size={40} />, value: `${co2Counter.count || co2Absorbed}kg`, label: "CO₂ Absorbed/Yr", color: "#64748b" },
+              { icon: <Camera size={40} />, value: recentUploads.length, label: "Recent Uploads", color: "#3b82f6" },
             ].map((stat, i) => (
               <div
                 key={i}
                 className={`glass-card reveal-on-scroll delay-${(i + 1) * 100}`}
                 style={{
-                  padding: "40px 24px", textAlign: "center",
+                  padding: "32px 20px", textAlign: "center",
                   display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center"
                 }}
               >
                 <div style={{
                   color: stat.color, marginBottom: "16px",
-                  background: `rgba(255,255,255,0.5)`, padding: "16px", borderRadius: "50%",
+                  background: `rgba(255,255,255,0.5)`, padding: "12px", borderRadius: "50%",
                   boxShadow: "0 4px 12px rgba(0,0,0,0.05)"
                 }}>
                   {stat.icon}
                 </div>
                 {isLoading ? (
-                  <div className="skeleton" style={{ width: "120px", height: "3.5rem", marginBottom: "8px" }} />
+                  <div className="skeleton" style={{ width: "100px", height: "3rem", marginBottom: "8px" }} />
                 ) : (
-                  <div style={{ fontSize: "3.5rem", fontWeight: 900, color: "var(--color-forest)", lineHeight: 1, marginBottom: "8px" }}>
+                  <div style={{ fontSize: "2.5rem", fontWeight: 900, color: "var(--color-forest)", lineHeight: 1, marginBottom: "8px" }}>
                     {stat.value}
                   </div>
                 )}
-                <div style={{ fontSize: "1.1rem", color: "var(--text-secondary)", fontWeight: 600 }}>{stat.label}</div>
+                <div style={{ fontSize: "1rem", color: "var(--text-secondary)", fontWeight: 600 }}>{stat.label}</div>
               </div>
             ))}
           </div>
@@ -279,20 +284,20 @@ export default function HomePage() {
               <p className="section-subtitle">See what our members have been planting</p>
             </div>
 
-            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(300px, 1fr))", gap: "32px" }}>
+            <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(280px, 1fr))", gap: "24px" }}>
               {isLoading
-                ? Array.from({ length: 3 }).map((_, i) => (
-                  <div key={i} className="glass-card" style={{ overflow: "hidden", padding: 0, height: "350px" }}>
-                    <div className="skeleton" style={{ width: "100%", height: "240px", borderRadius: 0 }} />
-                    <div style={{ padding: "20px 24px" }}>
-                      <div className="skeleton" style={{ width: "60%", height: "1.2rem", marginBottom: "12px" }} />
-                      <div className="skeleton" style={{ width: "40%", height: "1rem" }} />
+                ? Array.from({ length: 4 }).map((_, i) => (
+                  <div key={i} className="glass-card" style={{ overflow: "hidden", padding: 0, height: "300px" }}>
+                    <div className="skeleton" style={{ width: "100%", height: "200px", borderRadius: 0 }} />
+                    <div style={{ padding: "16px" }}>
+                      <div className="skeleton" style={{ width: "60%", height: "1rem", marginBottom: "8px" }} />
+                      <div className="skeleton" style={{ width: "40%", height: "0.9rem" }} />
                     </div>
                   </div>
                 ))
                 : recentUploads.map((upload, i) => (
-                  <div key={upload.id} className={`glass-card reveal-on-scroll delay-${(i % 3 + 1) * 100}`} style={{ overflow: "hidden", padding: 0 }}>
-                    <div style={{ height: "240px", overflow: "hidden", position: "relative" }}>
+                  <div key={upload.id} className={`glass-card reveal-on-scroll delay-${(i % 4 + 1) * 100}`} style={{ overflow: "hidden", padding: 0 }}>
+                    <div style={{ height: "200px", overflow: "hidden", position: "relative" }}>
                       <img
                         src={upload.imageUrl}
                         alt={upload.treeType}
@@ -302,20 +307,22 @@ export default function HomePage() {
                       />
                       <div style={{
                         position: "absolute", bottom: 0, left: 0, right: 0,
-                        background: "linear-gradient(to top, rgba(0,0,0,0.7), transparent)",
-                        padding: "20px", color: "white"
+                        background: "linear-gradient(to top, rgba(0,0,0,0.8), transparent)",
+                        padding: "16px", color: "white"
                       }}>
-                        <span style={{ fontWeight: 700, fontSize: "1.1rem" }}>{upload.treeType}</span>
+                        <span style={{ fontWeight: 700, fontSize: "1rem" }}>{upload.treeType}</span>
                       </div>
                     </div>
-                    <div style={{ padding: "20px 24px" }}>
-                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "8px" }}>
-                        <span style={{ fontSize: "0.9rem", color: "#6b7280", display: "flex", alignItems: "center", gap: "4px" }}>
+                    <div style={{ padding: "16px" }}>
+                      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "6px" }}>
+                        <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "4px" }}>
                           📍 {upload.location}
                         </span>
                       </div>
-                      <div style={{ fontSize: "0.9rem", color: "#2d6a4f", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
-                        <div style={{ width: "24px", height: "24px", borderRadius: "50%", background: "#e5e7eb", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem" }}>👤</div>
+                      <div style={{ fontSize: "0.85rem", color: "var(--color-forest)", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
+                        <div style={{ width: "22px", height: "22px", borderRadius: "50%", background: "var(--color-cream-dark)", display: "flex", alignItems: "center", justifyContent: "center", fontSize: "0.7rem", color: "var(--color-forest)" }}>
+                          {upload.user.name.charAt(0).toUpperCase()}
+                        </div>
                         {upload.user.name}
                       </div>
                     </div>
@@ -323,9 +330,12 @@ export default function HomePage() {
                 ))}
             </div>
 
-            <div className="reveal-on-scroll delay-200" style={{ textAlign: "center", marginTop: "60px" }}>
-              <Link href="/upload" className="btn-primary" style={{ textDecoration: "none", padding: "16px 48px", fontSize: "1.1rem" }}>
-                <Sprout size={22} /> Upload Your Tree
+            <div className="reveal-on-scroll delay-200" style={{ textAlign: "center", marginTop: "48px", display: "flex", flexDirection: "column", gap: "16px", alignItems: "center" }}>
+              <Link href="/upload" className="btn-primary" style={{ textDecoration: "none", padding: "14px 40px", fontSize: "1.05rem" }}>
+                <Sprout size={20} /> Upload Your Tree
+              </Link>
+              <Link href="/feed" style={{ color: "var(--color-forest)", textDecoration: "none", fontWeight: 600, display: "flex", alignItems: "center", gap: "6px" }}>
+                View Full Gallery <ArrowRight size={16} />
               </Link>
             </div>
           </div>
