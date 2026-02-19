@@ -3,5 +3,5 @@ export default function RegisterLayout({
 }: {
     children: React.ReactNode;
 }) {
-    return <div className="no-sidebar">{children}</div>;
+    return <>{children}</>;
 }

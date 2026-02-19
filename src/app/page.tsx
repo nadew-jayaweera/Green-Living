@@ -60,8 +60,8 @@ export default function HomePage() {
   return (
     <div>
       {/* ===== HERO SECTION ===== */}
-      <section className="hero-gradient" style={{ padding: "0 24px 80px", color: "white", textAlign: "center" }}>
-        <div style={{ maxWidth: "800px", margin: "0 auto", paddingTop: "100px" }}>
+      <section className="hero-gradient" style={{ padding: "100px 24px 120px", color: "white", textAlign: "center", position: "relative" }}>
+        <div style={{ maxWidth: "800px", margin: "0 auto" }}>
           <div className="animate-fade-in-up" style={{ marginBottom: "24px" }}>
             <span style={{
               display: "inline-flex", alignItems: "center", gap: "8px",
@@ -107,16 +107,16 @@ export default function HomePage() {
         </div>
 
         {/* Decorative elements */}
-        <div style={{ position: "absolute", bottom: "0", left: "0", right: "0", height: "80px", overflow: "hidden" }}>
+        <div style={{ position: "absolute", bottom: "-40px", left: "0", right: "0", height: "80px", overflow: "hidden" }}>
           <svg viewBox="0 0 1440 80" preserveAspectRatio="none" style={{ width: "100%", height: "100%" }}>
-            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" fill="#f0fdf4" />
+            <path d="M0,40 C360,80 720,0 1080,40 C1260,60 1380,50 1440,40 L1440,80 L0,80 Z" fill="#fef3c7" />
           </svg>
         </div>
       </section>
 
       {/* ===== STATS SECTION ===== */}
-      <section style={{ padding: "80px 24px", background: "linear-gradient(135deg, #f0fdf4 0%, #f0f9ff 50%, #fef3c7 100%)" }}>
-        <div style={{ maxWidth: "1000px", margin: "0 auto" }}>
+      <section style={{ padding: "0 24px 80px", background: "linear-gradient(90deg, #fef3c7 0%, #f0f9ff 50%, #fef3c7 100%)" }}>
+        <div style={{ maxWidth: "1000px", margin: "0 auto", paddingTop: "40px" }}>
           <h2 className="section-title">Our Impact</h2>
           <p className="section-subtitle">Every tree planted is a step toward a healthier planet</p>
 
@@ -141,8 +141,8 @@ export default function HomePage() {
       </section>
 
       {/* ===== HOW IT WORKS ===== */}
-      <section style={{ padding: "80px 24px" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+      <section style={{ padding: "0 24px 80px", background: "linear-gradient(90deg, #fef3c7 0%, #f0f9ff 50%, #fef3c7 100%)" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", paddingTop: "40px" }}>
           <h2 className="section-title">How It Works</h2>
           <p className="section-subtitle">Three simple steps to make a difference</p>
 
@@ -177,8 +177,8 @@ export default function HomePage() {
       </section>
 
       {/* ===== FEATURES SECTION ===== */}
-      <section style={{ padding: "80px 24px", background: "linear-gradient(135deg, #fef3c7 0%, #f0f9ff 50%, #f3f4f6 100%)" }}>
-        <div style={{ maxWidth: "1100px", margin: "0 auto" }}>
+      <section style={{ padding: "0 24px 80px", background: "linear-gradient(90deg, #fef3c7 0%, #f0f9ff 50%, #fef3c7 100%)" }}>
+        <div style={{ maxWidth: "1100px", margin: "0 auto", paddingTop: "40px" }}>
           <h2 className="section-title">Platform Features</h2>
           <p className="section-subtitle">Everything you need to make a green impact</p>
 
@@ -212,8 +212,8 @@ export default function HomePage() {
 
       {/* ===== RECENT UPLOADS GALLERY ===== */}
       {recentUploads.length > 0 && (
-        <section style={{ padding: "80px 24px" }}>
-          <div style={{ maxWidth: "1200px", margin: "0 auto" }}>
+        <section style={{ padding: "0 24px 80px", background: "linear-gradient(90deg, #fef3c7 0%, #f0f9ff 50%, #fef3c7 100%)" }}>
+          <div style={{ maxWidth: "1200px", margin: "0 auto", paddingTop: "40px" }}>
             <h2 className="section-title">Recent Community Uploads</h2>
             <p className="section-subtitle">See what our members have been planting</p>
 
@@ -255,21 +255,44 @@ export default function HomePage() {
       <section className="cta-section" style={{
         padding: "80px 24px",
         textAlign: "center",
-        color: "white",
+        color: "#1a4d2e",
       }}>
-        <div style={{ maxWidth: "700px", margin: "0 auto" }}>
-          <h2 style={{ fontSize: "2.5rem", fontWeight: 900, marginBottom: "16px" }}>
-            Ready to Make a Difference? 🌍
+        <div
+          style={{
+            maxWidth: "860px",
+            margin: "0 auto",
+            padding: "36px 28px",
+            borderRadius: "28px",
+            background: "rgba(255,255,255,0.6)",
+            border: "1px solid rgba(82, 183, 136, 0.25)",
+            backdropFilter: "blur(12px)",
+          }}
+        >
+          <div style={{ display: "inline-flex", alignItems: "center", gap: "8px", padding: "6px 14px", borderRadius: "999px", background: "rgba(45,106,79,0.1)", fontWeight: 600, fontSize: "0.85rem", marginBottom: "16px", color: "#1a4d2e" }}>
+            🌍 Ready to Make a Difference?
+          </div>
+          <h2 style={{ fontSize: "clamp(2rem, 4vw, 2.8rem)", fontWeight: 900, marginBottom: "14px", lineHeight: 1.1, color: "#1a4d2e" }}>
+            Join thousands of eco-warriors
+            <span style={{ display: "block" }}>planting trees and earning badges.</span>
           </h2>
-          <p style={{ fontSize: "1.15rem", color: "rgba(255,255,255,0.85)", marginBottom: "36px", lineHeight: 1.7 }}>
-            Join thousands of eco-warriors who are planting trees and earning badges. Your contribution matters!
+          <p style={{ fontSize: "1.05rem", color: "#4b5563", marginBottom: "28px", lineHeight: 1.7 }}>
+            Track your impact, inspire others, and turn every tree into a badge-worthy milestone. Your contribution matters.
           </p>
-          <Link href="/register" className="btn-primary" style={{
-            padding: "18px 48px", fontSize: "1.15rem",
-            background: "#f0f0f0", color: "#1a4d2e", textDecoration: "none",
-          }}>
-            Join Green Living <ArrowRight size={20} />
-          </Link>
+          <div style={{ display: "flex", gap: "12px", justifyContent: "center", flexWrap: "wrap" }}>
+            <Link href="/register" className="btn-primary" style={{
+              padding: "16px 40px", fontSize: "1.05rem",
+              background: "#f0f0f0", color: "#1a4d2e", textDecoration: "none",
+            }}>
+              Join Green Living <ArrowRight size={18} />
+            </Link>
+            <Link href="/upload" className="btn-secondary" style={{
+              padding: "16px 40px", fontSize: "1.05rem",
+              color: "white", borderColor: "#52b788",
+              background: "linear-gradient(135deg, #2d6a4f, #52b788)", textDecoration: "none",
+            }}>
+              Start Planting
+            </Link>
+          </div>
         </div>
       </section>
     </div>
