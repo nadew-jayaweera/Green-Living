@@ -1,149 +1,101 @@
-# Green Living - Smart Home Energy Management System
+# Green Living
 
-A comprehensive web application for monitoring and managing household energy consumption using IoT devices. This system helps users reduce electricity bills and promote sustainable living through real-time data, smart scheduling, and AI-powered recommendations.
+Green Living is a Next.js web app that helps users share eco-friendly actions, upload planting evidence, earn badges, and participate in a community forum.
 
-## 🚀 Features
+## Tech Stack
 
-### 📊 Real-Time Monitoring
-- **Live Dashboard**: Track current power consumption, voltage, and current in real-time.
-- **Device Status**: Monitor the online/offline status of all connected IoT devices.
-- **Historical Data**: View energy usage patterns with interactive charts.
+- Next.js 16 (App Router)
+- React 19
+- TypeScript
+- Prisma ORM
+- SQLite (default local database)
+- NextAuth (credentials-based authentication)
+- Tailwind CSS
 
-### 💡 Smart Automation
-- **Device Control**: Remotely turn appliances ON/OFF.
-- **Scheduling**: Set schedules for devices to operate automatically (e.g., turn on geyser at 6 PM).
-- **Timer Control**: Set specific durations for device operation.
+## Installation Guide
 
-### 🤖 AI & Analytics
-- **Consumption Prediction**: Predict future energy usage based on historical data.
-- **Anomaly Detection**: Identify unusual spikes in consumption that may indicate issues.
-- **Personalized Tips**: Receive AI-generated recommendations to save energy.
+### 1) Prerequisites
 
-### 👤 User Management
-- **Secure Authentication**: Email/password login with JWT-based session management.
-- **Profile Management**: Update user details and preferences.
-- **Role-Based Access**: Support for different user roles (Admin, User).
+Make sure you have the following installed:
 
-## 🛠️ Tech Stack
+- **Node.js 20+**
+- **npm 10+**
 
-### Frontend
-- **Framework**: React 18
-- **Language**: JavaScript (ES6+)
-- **Styling**: Tailwind CSS
-- **Charts**: Recharts
-- **Icons**: Lucide React
+Check your versions:
 
-### Backend
-- **Framework**: Express.js
-- **Language**: JavaScript
-- **Database**: MongoDB
-- **Authentication**: JWT (JSON Web Tokens)
-- **Security**: Bcrypt.js
-
-### IoT Integration
-- **Protocol**: MQTT
-- **Broker**: Mosquitto (Local)
-- **Devices**: ESP32 (Simulated)
-
-## 📂 Project Structure
-
-```
-Green-Living/
-├── client/                # React Frontend
-│   ├── src/
-│   │   ├── components/    # Reusable UI components
-│   │   ├── pages/         # Page components (Dashboard, Login, etc.)
-│   │   ├── services/      # API service layer
-│   │   ├── contexts/      # React Context for state management
-│   │   └── App.js         # Main application component
-│   └── package.json
-│
-├── server/                # Express.js Backend
-│   ├── config/            # Database and environment configuration
-│   ├── controllers/       # Request handlers
-│   ├── models/            # Mongoose schemas
-│   ├── routes/            # API route definitions
-│   ├── services/          # Business logic and external services
-│   └── server.js          # Application entry point
-│
-├── .env                   # Environment variables (not in git)
-├── package.json           # Root project dependencies
-└── README.md              # Project documentation
+```bash
+node -v
+npm -v
 ```
 
-## 🚀 Getting Started
+### 2) Clone the repository
 
-### Prerequisites
-- Node.js (v14 or higher)
-- MongoDB (Local or Atlas)
-- MQTT Broker (e.g., Mosquitto)
+```bash
+git clone <your-repo-url>
+cd Green-Living
+```
 
-### Installation
+### 3) Install dependencies
 
-1. **Clone the repository**
-   ```bash
-   git clone <repository-url>
-   cd Green-Living
-   ```
+```bash
+npm install
+```
 
-2. **Install Backend Dependencies**
-   ```bash
-   cd server
-   npm install
-   ```
+### 4) Configure environment variables
 
-3. **Install Frontend Dependencies**
-   ```bash
-   cd ../client
-   npm install
-   ```
+Create a `.env` file in the project root:
 
-### Configuration
+```bash
+cp .env.example .env
+```
 
-Create a `.env` file in the `server/` directory with the following variables:
+If `.env.example` does not exist, create `.env` manually with:
 
 ```env
-PORT=5000
-MONGO_URI=mongodb://localhost:27017/greenliving
-JWT_SECRET=your_jwt_secret
-MQTT_HOST=localhost
-MQTT_PORT=1883
+DATABASE_URL="file:./prisma/dev.db"
+NEXTAUTH_SECRET="replace-with-a-strong-random-secret"
+MAIN_ADMIN_EMAIL="admin@example.com"
+
+# Optional (required only for image uploads to Cloudinary)
+CLOUDINARY_CLOUD_NAME=""
+CLOUDINARY_API_KEY=""
+CLOUDINARY_API_SECRET=""
 ```
 
-### Running the Application
+### 5) Set up the database
 
-1. **Start the Backend**
-   ```bash
-   cd server
-   npm run dev
-   ```
-   The server will start on `http://localhost:5000`.
+Run Prisma migrations:
 
-2. **Start the Frontend**
-   ```bash
-   cd ../client
-   npm run dev
-   ```
-   The frontend will start on `http://localhost:5173`.
+```bash
+npx prisma migrate deploy
+```
 
-3. **Access the App**
-   Open [http://localhost:5173](http://localhost:5173) in your browser.
+(Optional) Seed demo data:
 
-## 🔌 IoT Device Integration
+```bash
+npm run seed
+```
 
-The system uses MQTT for real-time communication between IoT devices and the backend.
+### 6) Start the development server
 
-### MQTT Topics
-- **Publish (Device → Server)**: `home/device/status`
-- **Subscribe (Server → Device)**: `home/device/control`
+```bash
+npm run dev
+```
 
-### Simulated Device
-In the `client/src/services/mqttService.js` file, we simulate an ESP32 device for testing purposes. You can replace this with actual ESP32 code that publishes data to the MQTT broker.
+Then open:
 
-## 🤝 Contributing
+- http://localhost:3000
 
-Contributions are welcome! Feel free to open an issue or submit a pull request.
+## Build for Production
 
-## 📄 License
+```bash
+npm run build
+npm run start
+```
 
-This project is licensed under the MIT License.
+## Useful Commands
+
+```bash
+npm run lint        # Run ESLint
+npx prisma studio   # Open Prisma Studio
+```
