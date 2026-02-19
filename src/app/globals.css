@@ -28,7 +28,7 @@
   --foreground: #1a2e1a;
   --card-bg: rgba(255, 255, 255, 0.65);
   --card-border: rgba(255, 255, 255, 0.6);
-  --sidebar-bg: rgba(230, 230, 230, 0.15);
+  --sidebar-bg: rgba(255, 255, 255, 0.08);
   --input-bg: linear-gradient(135deg, rgba(255, 255, 255, 0.95) 0%, rgba(240, 253, 244, 0.9) 50%, rgba(240, 249, 255, 0.9) 100%);
   --input-border: rgba(82, 183, 136, 0.3);
   --text-primary: var(--foreground);
@@ -55,7 +55,7 @@ body {
   --foreground: #f1f5f9;
   --card-bg: rgba(30, 41, 59, 0.7);
   --card-border: rgba(255, 255, 255, 0.1);
-  --sidebar-bg: rgba(15, 23, 42, 0.4);
+  --sidebar-bg: rgba(15, 23, 42, 0.2);
   --input-bg: rgba(51, 65, 85, 0.5);
   --input-border: rgba(82, 183, 136, 0.2);
   --text-primary: #ffffff;
@@ -745,9 +745,9 @@ body:has(.no-sidebar) .admin-content {
   height: calc(100vh - 24px);
   width: 280px;
   background: var(--sidebar-bg);
-  backdrop-filter: blur(20px);
-  -webkit-backdrop-filter: blur(20px);
-  border: 1px solid rgba(200, 200, 200, 0.25);
+  backdrop-filter: blur(35px) saturate(150%);
+  -webkit-backdrop-filter: blur(35px) saturate(150%);
+  border: 1px solid rgba(255, 255, 255, 0.18);
   display: flex;
   flex-direction: column;
   z-index: 100;
