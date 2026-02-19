@@ -47,11 +47,11 @@ export default function LeaderboardPage() {
             </div>
 
             {loading ? (
-                <div style={{ textAlign: "center", padding: "60px", color: "#6b7280" }}>Loading leaderboard...</div>
+                <div style={{ textAlign: "center", padding: "60px", color: "var(--text-secondary)" }}>Loading leaderboard...</div>
             ) : users.length === 0 ? (
                 <div className="glass-card" style={{ padding: "60px", textAlign: "center" }}>
-                    <TreePine size={48} style={{ color: "#d1d5db", marginBottom: "16px" }} />
-                    <h3 style={{ color: "#6b7280" }}>No planters yet. Be the first!</h3>
+                    <TreePine size={48} style={{ color: "var(--text-secondary)", opacity: 0.5, marginBottom: "16px" }} />
+                    <h3 style={{ color: "var(--text-secondary)" }}>No planters yet. Be the first!</h3>
                 </div>
             ) : (
                 <div style={{ display: "flex", flexDirection: "column", gap: "12px" }}>
@@ -84,16 +84,16 @@ export default function LeaderboardPage() {
 
                                 {/* User Info */}
                                 <div style={{ flex: 1 }}>
-                                    <div style={{ fontWeight: 700, color: "#1a4d2e", fontSize: "1.1rem" }}>{user.name}</div>
-                                    <div style={{ fontSize: "0.85rem", color: "#6b7280" }}>{getBadge(user._count.uploads)}</div>
+                                    <div style={{ fontWeight: 700, color: "var(--text-primary)", fontSize: "1.1rem" }}>{user.name}</div>
+                                    <div style={{ fontSize: "0.85rem", color: "var(--text-secondary)" }}>{getBadge(user._count.uploads)}</div>
                                 </div>
 
                                 {/* Tree Count */}
                                 <div style={{ textAlign: "right" }}>
-                                    <div style={{ fontSize: "1.5rem", fontWeight: 900, color: "#52b788", display: "flex", alignItems: "center", gap: "6px" }}>
+                                    <div style={{ fontSize: "1.5rem", fontWeight: 900, color: "var(--color-forest)", display: "flex", alignItems: "center", gap: "6px" }}>
                                         <TreePine size={20} /> {user._count.uploads}
                                     </div>
-                                    <div style={{ fontSize: "0.75rem", color: "#9ca3af" }}>trees</div>
+                                    <div style={{ fontSize: "0.75rem", color: "var(--text-secondary)" }}>trees</div>
                                 </div>
                             </div>
                         );

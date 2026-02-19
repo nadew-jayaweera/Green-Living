@@ -1,9 +1,12 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import SessionProvider from "@/components/SessionProvider";
+import { ToastProvider } from "@/contexts/ToastContext";
+import { ThemeProvider } from "@/contexts/ThemeContext";
 import Sidebar from "@/components/Sidebar";
 import Footer from "@/components/Footer";
+import BackToTop from "@/components/BackToTop";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -25,6 +28,21 @@ export const metadata: Metadata = {
     description: "Plant trees, earn badges, protect the planet.",
     type: "website",
   },
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Green Living",
+  },
+  icons: {
+    apple: "/icons/icon.svg",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#2d6a4f",
+  width: "device-width",
+  initialScale: 1,
 };
 
 export default function RootLayout({
@@ -33,19 +51,40 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <script
+          dangerouslySetInnerHTML={{
+            __html: `
+              (function() {
+                try {
+                  const savedTheme = localStorage.getItem('theme');
+                  const theme = savedTheme || (window.matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light');
+                  document.documentElement.setAttribute('data-theme', theme);
+                } catch (e) {}
+              })()
+            `,
+          }}
+        />
+      </head>
       <body
         className={`${geistSans.variable} ${geistMono.variable} antialiased`}
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+        suppressHydrationWarning
       >
         <SessionProvider>
-          <Sidebar />
-          <div className="admin-content" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
-            <main className="leaf-pattern" style={{ flex: 1 }}>
-              {children}
-            </main>
-            <Footer />
-          </div>
+          <ThemeProvider>
+            <ToastProvider>
+              <Sidebar />
+              <div className="admin-content" style={{ flex: 1, display: "flex", flexDirection: "column" }}>
+                <main className="leaf-pattern" style={{ flex: 1 }}>
+                  {children}
+                </main>
+                <Footer />
+              </div>
+              <BackToTop />
+            </ToastProvider>
+          </ThemeProvider>
         </SessionProvider>
       </body>
     </html>

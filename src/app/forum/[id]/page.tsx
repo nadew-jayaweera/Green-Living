@@ -95,12 +95,12 @@ export default function ForumPostPage({ params }: { params: Promise<{ id: string
         return `${Math.floor(seconds / 86400)}d ago`;
     };
 
-    if (loading) return <div style={{ padding: "100px", textAlign: "center", color: "#6b7280" }}>Loading...</div>;
-    if (!post) return <div style={{ padding: "100px", textAlign: "center", color: "#6b7280" }}>Post not found</div>;
+    if (loading) return <div style={{ padding: "100px", textAlign: "center", color: "var(--text-secondary)" }}>Loading...</div>;
+    if (!post) return <div style={{ padding: "100px", textAlign: "center", color: "var(--text-secondary)" }}>Post not found</div>;
 
     return (
         <div style={{ maxWidth: "800px", margin: "0 auto", padding: "40px 24px 80px" }}>
-            <Link href="/forum" style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#2d6a4f", textDecoration: "none", fontWeight: 600, marginBottom: "24px" }}>
+            <Link href="/forum" style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "var(--color-forest)", textDecoration: "none", fontWeight: 600, marginBottom: "24px" }}>
                 <ArrowLeft size={18} /> Back to Forum
             </Link>
 
@@ -109,22 +109,22 @@ export default function ForumPostPage({ params }: { params: Promise<{ id: string
                 <div style={{ display: "flex", alignItems: "center", gap: "10px", marginBottom: "16px" }}>
                     <span style={{
                         padding: "4px 14px", borderRadius: "50px", fontSize: "0.8rem", fontWeight: 600,
-                        background: "rgba(82, 183, 136, 0.1)", color: "#2d6a4f",
+                        background: "var(--pill-bg)", color: "var(--color-forest)",
                     }}>
                         {post.category}
                     </span>
-                    <span style={{ fontSize: "0.85rem", color: "#9ca3af", display: "flex", alignItems: "center", gap: "4px" }}>
+                    <span style={{ fontSize: "0.85rem", color: "var(--text-secondary)", display: "flex", alignItems: "center", gap: "4px" }}>
                         <Clock size={14} /> {timeAgo(post.createdAt)}
                     </span>
                 </div>
 
-                <h1 style={{ fontSize: "1.75rem", fontWeight: 800, color: "#1a4d2e", marginBottom: "8px" }}>{post.title}</h1>
+                <h1 style={{ fontSize: "1.75rem", fontWeight: 800, color: "var(--text-primary)", marginBottom: "8px" }}>{post.title}</h1>
 
-                <p style={{ fontSize: "0.9rem", color: "#52b788", fontWeight: 600, marginBottom: "20px" }}>
+                <p style={{ fontSize: "0.9rem", color: "var(--color-forest)", fontWeight: 600, marginBottom: "20px" }}>
                     by {post.user.name}
                 </p>
 
-                <div style={{ color: "#374151", lineHeight: 1.8, fontSize: "1rem", whiteSpace: "pre-wrap" }}>
+                <div style={{ color: "var(--text-secondary)", lineHeight: 1.8, fontSize: "1rem", whiteSpace: "pre-wrap" }}>
                     {post.content}
                 </div>
 
@@ -136,14 +136,14 @@ export default function ForumPostPage({ params }: { params: Promise<{ id: string
                         style={{
                             display: "flex", alignItems: "center", gap: "6px", padding: "8px 16px",
                             borderRadius: "50px", border: "none", cursor: session?.user ? "pointer" : "default",
-                            background: post.isLiked ? "rgba(239,68,68,0.1)" : "rgba(82, 183, 136, 0.1)",
-                            color: post.isLiked ? "#ef4444" : "#2d6a4f",
+                            background: post.isLiked ? "rgba(239,68,68,0.1)" : "var(--pill-bg)",
+                            color: post.isLiked ? "#ef4444" : "var(--color-forest)",
                             fontWeight: 600, fontSize: "0.9rem", transition: "all 0.3s",
                         }}
                     >
                         <Heart size={18} fill={post.isLiked ? "#ef4444" : "none"} /> {post._count.likes}
                     </button>
-                    <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "#6b7280", fontSize: "0.9rem" }}>
+                    <span style={{ display: "flex", alignItems: "center", gap: "6px", color: "var(--text-secondary)", fontSize: "0.9rem" }}>
                         <MessageSquare size={18} /> {post._count.comments} comments
                     </span>
                 </div>
@@ -170,15 +170,15 @@ export default function ForumPostPage({ params }: { params: Promise<{ id: string
                 {post.comments.map((c, i) => (
                     <div key={c.id} className="glass-card animate-fade-in-up" style={{ padding: "20px 24px", animationDelay: `${i * 0.05}s` }}>
                         <div style={{ display: "flex", justifyContent: "space-between", marginBottom: "8px" }}>
-                            <span style={{ fontWeight: 700, color: "#1a4d2e", fontSize: "0.9rem" }}>{c.user.name}</span>
-                            <span style={{ fontSize: "0.8rem", color: "#9ca3af" }}>{timeAgo(c.createdAt)}</span>
+                            <span style={{ fontWeight: 700, color: "var(--text-primary)", fontSize: "0.9rem" }}>{c.user.name}</span>
+                            <span style={{ fontSize: "0.8rem", color: "var(--text-secondary)" }}>{timeAgo(c.createdAt)}</span>
                         </div>
-                        <p style={{ color: "#374151", lineHeight: 1.7, fontSize: "0.95rem" }}>{c.content}</p>
+                        <p style={{ color: "var(--text-secondary)", lineHeight: 1.7, fontSize: "0.95rem" }}>{c.content}</p>
                     </div>
                 ))}
 
                 {post.comments.length === 0 && (
-                    <div style={{ textAlign: "center", padding: "40px", color: "#9ca3af" }}>
+                    <div style={{ textAlign: "center", padding: "40px", color: "var(--text-secondary)" }}>
                         No comments yet. Be the first to comment!
                     </div>
                 )}

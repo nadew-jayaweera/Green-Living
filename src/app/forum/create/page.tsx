@@ -57,12 +57,12 @@ export default function CreatePostPage() {
 
     return (
         <div style={{ maxWidth: "700px", margin: "0 auto", padding: "40px 24px 80px" }}>
-            <Link href="/forum" style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "#2d6a4f", textDecoration: "none", fontWeight: 600, marginBottom: "24px" }}>
+            <Link href="/forum" style={{ display: "inline-flex", alignItems: "center", gap: "6px", color: "var(--color-forest)", textDecoration: "none", fontWeight: 600, marginBottom: "24px" }}>
                 <ArrowLeft size={18} /> Back to Forum
             </Link>
 
             <h1 className="section-title" style={{ textAlign: "left", marginBottom: "32px" }}>
-                <PenLine size={28} style={{ display: "inline", marginRight: "10px", color: "#52b788" }} />
+                <PenLine size={28} style={{ display: "inline", marginRight: "10px", color: "var(--color-forest)" }} />
                 Create New Post
             </h1>
 
@@ -103,7 +103,7 @@ export default function CreatePostPage() {
                             required
                             maxLength={5000}
                         />
-                        <div style={{ textAlign: "right", fontSize: "0.8rem", color: "#9ca3af", marginTop: "4px" }}>
+                        <div style={{ textAlign: "right", fontSize: "0.8rem", color: "var(--text-secondary)", marginTop: "4px" }}>
                             {content.length}/5000
                         </div>
                     </div>
