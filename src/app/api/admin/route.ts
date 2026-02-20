@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
+import { checkAndAwardBadges } from "@/lib/badges";
 
 // Middleware helper to check admin role
 async function requireAdmin() {
@@ -87,7 +88,13 @@ export async function PATCH(request: Request) {
             data: { status: action },
         });
 
-        return NextResponse.json({ message: `Upload ${action.toLowerCase()}`, upload });
+        // Award badges only when upload is approved
+        let newBadges = null;
+        if (action === "APPROVED") {
+            newBadges = await checkAndAwardBadges(upload.userId);
+        }
+
+        return NextResponse.json({ message: `Upload ${action.toLowerCase()}`, upload, newBadges });
     } catch (error) {
         console.error("Moderation error:", error);
         return NextResponse.json({ error: "Failed to moderate" }, { status: 500 });

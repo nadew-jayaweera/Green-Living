@@ -33,8 +33,8 @@ export default function BadgesPage() {
     useEffect(() => {
         if (session?.user) {
             const userId = (session.user as { id: string }).id;
-            // Fetch user's badges and tree count
-            fetch(`/api/uploads?userId=${userId}&limit=999`)
+            // Fetch user's APPROVED uploads only for badge counting
+            fetch(`/api/uploads?userId=${userId}&status=APPROVED&limit=999`)
                 .then((res) => res.json())
                 .then((data) => setTreeCount(data.total || 0))
                 .catch(() => { });

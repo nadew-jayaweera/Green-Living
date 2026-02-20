@@ -105,7 +105,9 @@ export default function UploadPage() {
                     padding: "24px", marginBottom: "24px", textAlign: "center",
                     border: "2px solid rgba(82, 183, 136, 0.3)",
                 }}>
-                    <CheckCircle size={48} style={{ color: "#52b788", marginBottom: "12px" }} />
+                    <div style={{ display: "flex", justifyContent: "center", marginBottom: "12px" }}>
+                        <CheckCircle size={48} style={{ color: "#52b788" }} />
+                    </div>
                     <h3 style={{ color: "#1a4d2e", fontWeight: 700, marginBottom: "8px" }}>{success.message}</h3>
                     {success.newBadges.length > 0 && (
                         <div style={{ marginTop: "12px" }}>
