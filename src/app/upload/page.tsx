@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { Upload, MapPin, FileText, TreePine, Image, CheckCircle, AlertCircle, Sprout } from "lucide-react";
@@ -25,11 +25,14 @@ export default function UploadPage() {
     const [error, setError] = useState("");
     const [success, setSuccess] = useState<{ message: string; newBadges: string[] } | null>(null);
 
+    useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/login");
+        }
+    }, [status, router]);
+
     if (status === "loading") return <div style={{ padding: "100px", textAlign: "center" }}>Loading...</div>;
-    if (!session) {
-        router.push("/login");
-        return null;
-    }
+    if (!session) return null;
 
     const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];

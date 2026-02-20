@@ -34,9 +34,6 @@ export const metadata: Metadata = {
     statusBarStyle: "default",
     title: "Green Living",
   },
-  icons: {
-    apple: "/icons/icon.svg",
-  },
 };
 
 export const viewport: Viewport = {
