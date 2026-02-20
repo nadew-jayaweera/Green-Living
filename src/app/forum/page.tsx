@@ -122,7 +122,9 @@ export default function ForumPage() {
                     <div style={{ textAlign: "center", padding: "60px", color: "#6b7280" }}>Loading discussions...</div>
                 ) : posts.length === 0 ? (
                     <div className="glass-card" style={{ padding: "60px", textAlign: "center" }}>
-                        <Search size={48} style={{ color: "#d1d5db", marginBottom: "16px" }} />
+                        <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
+                            <Search size={48} style={{ color: "#d1d5db" }} />
+                        </div>
                         <h3 style={{ color: "var(--text-secondary)", fontWeight: 600, marginBottom: "8px" }}>No posts yet</h3>
                         <p style={{ color: "var(--text-secondary)" }}>Be the first to start a discussion!</p>
                     </div>

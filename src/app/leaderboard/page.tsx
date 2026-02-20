@@ -50,7 +50,9 @@ export default function LeaderboardPage() {
                 <div style={{ textAlign: "center", padding: "60px", color: "var(--text-secondary)" }}>Loading leaderboard...</div>
             ) : users.length === 0 ? (
                 <div className="glass-card" style={{ padding: "60px", textAlign: "center" }}>
-                    <TreePine size={48} style={{ color: "var(--text-secondary)", opacity: 0.5, marginBottom: "16px" }} />
+                    <div style={{ display: "flex", justifyContent: "center", marginBottom: "16px" }}>
+                        <TreePine size={48} style={{ color: "var(--text-secondary)", opacity: 0.5 }} />
+                    </div>
                     <h3 style={{ color: "var(--text-secondary)" }}>No planters yet. Be the first!</h3>
                 </div>
             ) : (
