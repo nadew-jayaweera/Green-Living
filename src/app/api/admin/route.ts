@@ -46,6 +46,7 @@ export async function GET() {
                 name: true,
                 email: true,
                 role: true,
+                suspended: true,
                 createdAt: true,
                 _count: { select: { uploads: true, badges: true, forumPosts: true } },
             },
@@ -173,5 +174,48 @@ export async function DELETE(request: Request) {
     } catch (error) {
         console.error("Delete error:", error);
         return NextResponse.json({ error: "Failed to delete" }, { status: 500 });
+    }
+}
+
+// POST: Suspend/unsuspend user
+export async function POST(request: Request) {
+    const session = await requireAdmin();
+    if (!session) {
+        return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+    }
+
+    try {
+        const { userId, action } = await request.json();
+
+        if (!userId || !["suspend", "unsuspend"].includes(action)) {
+            return NextResponse.json({ error: "Invalid request" }, { status: 400 });
+        }
+
+        // Prevent self-suspension
+        const currentUser = (session.user as { id?: string });
+        if (currentUser.id === userId) {
+            return NextResponse.json({ error: "Cannot suspend yourself" }, { status: 400 });
+        }
+
+        // Prevent suspending the main admin
+        const mainAdminEmail = process.env.MAIN_ADMIN_EMAIL || "";
+        const targetUser = await prisma.user.findUnique({ where: { id: userId } });
+        if (targetUser?.email === mainAdminEmail) {
+            return NextResponse.json({ error: "Cannot suspend the main admin" }, { status: 400 });
+        }
+
+        const suspended = action === "suspend";
+        const user = await prisma.user.update({
+            where: { id: userId },
+            data: { suspended },
+        });
+
+        return NextResponse.json({ 
+            message: `User ${suspended ? "suspended" : "unsuspended"} successfully`, 
+            user 
+        });
+    } catch (error) {
+        console.error("Suspension error:", error);
+        return NextResponse.json({ error: "Failed to update suspension status" }, { status: 500 });
     }
 }
