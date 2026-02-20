@@ -3,7 +3,7 @@
 import { useState, useEffect } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { Users, TreePine, MessageCircle, Image, Check, X, Trash2, AlertCircle, UserCog, Mail, Calendar, Award, Search, Filter } from "lucide-react";
+import { Users, TreePine, MessageCircle, Image, Check, X, Trash2, AlertCircle, UserCog, Mail, Calendar, Award, Search, Filter, Ban, ShieldCheck } from "lucide-react";
 
 interface AdminData {
     stats: {
@@ -34,6 +34,7 @@ interface AdminData {
         name: string;
         email: string;
         role: string;
+        suspended: boolean;
         createdAt: string;
         _count: { uploads: number; badges: number; forumPosts: number };
     }>;
@@ -113,6 +114,19 @@ export default function AdminPage() {
             method: "PUT",
             headers: { "Content-Type": "application/json" },
             body: JSON.stringify({ userId, newRole }),
+        });
+        fetchData();
+        setActionLoading("");
+    };
+
+    const toggleSuspension = async (userId: string, isSuspended: boolean) => {
+        const action = isSuspended ? "unsuspend" : "suspend";
+        if (!confirm(`Are you sure you want to ${action} this user?`)) return;
+        setActionLoading(userId);
+        await fetch("/api/admin", {
+            method: "POST",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify({ userId, action }),
         });
         fetchData();
         setActionLoading("");
@@ -222,7 +236,7 @@ export default function AdminPage() {
                         <table style={{ width: "100%", borderCollapse: "separate", borderSpacing: "0 8px" }}>
                             <thead>
                                 <tr>
-                                    {["Name", "Contact", "Role", "Uploads", "Badges", "Posts", "Joined", "Actions"].map((h) => (
+                                    {["Name", "Contact", "Role", "Status", "Uploads", "Badges", "Posts", "Joined", "Actions"].map((h) => (
                                         <th key={h} style={{ textAlign: "left", padding: "0 16px", fontSize: "0.75rem", textTransform: "uppercase", letterSpacing: "0.05em", color: "#6b7280", fontWeight: 700 }}>{h}</th>
                                     ))}
                                 </tr>
@@ -267,6 +281,16 @@ export default function AdminPage() {
                                                 </span>
                                             </td>
                                             <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
+                                                <span style={{
+                                                    padding: "4px 10px", borderRadius: "6px", fontSize: "0.75rem", fontWeight: 700, letterSpacing: "0.02em",
+                                                    background: user.suspended ? "rgba(239,68,68,0.1)" : "rgba(34,197,94,0.15)",
+                                                    color: user.suspended ? "#dc2626" : "#16a34a",
+                                                    border: user.suspended ? "1px solid rgba(239,68,68,0.2)" : "1px solid rgba(34,197,94,0.2)",
+                                                }}>
+                                                    {user.suspended ? "SUSPENDED" : "ACTIVE"}
+                                                </span>
+                                            </td>
+                                            <td style={{ padding: "12px 16px", background: "#f0f0f0", boxShadow: "0 2px 4px rgba(0,0,0,0.02)" }}>
                                                 <div style={{ display: "flex", alignItems: "center", gap: "6px", fontWeight: 600, color: "#2d6a4f" }}>
                                                     <div style={{ background: "rgba(82,183,136,0.1)", padding: "4px", borderRadius: "50%" }}><TreePine size={14} /></div>
                                                     {user._count.uploads}
@@ -295,19 +319,49 @@ export default function AdminPage() {
                                                         <span style={{ fontSize: "0.75rem", color: "#6b7280", fontStyle: "italic", fontWeight: 500 }}>Protected</span>
                                                     ) : (
                                                         <>
-                                                            {isMainAdmin && !isCurrentUser && (
+                                                            {isMainAdmin && !isCurrentUser && user.role !== "ADMIN" && (
                                                                 <button onClick={() => toggleRole(user.id, user.role)}
                                                                     disabled={actionLoading === user.id}
-                                                                    title={user.role === "ADMIN" ? "Demote to User" : "Promote to Admin"}
+                                                                    title="Promote to Admin"
                                                                     className="hover:scale-105 active:scale-95 transition-transform"
                                                                     style={{
                                                                         padding: "6px 12px", borderRadius: "8px", border: "none", cursor: "pointer",
                                                                         fontSize: "0.75rem", fontWeight: 600,
-                                                                        background: user.role === "ADMIN" ? "rgba(245,158,11,0.1)" : "rgba(82,183,136,0.1)",
-                                                                        color: user.role === "ADMIN" ? "#d97706" : "#2d6a4f",
+                                                                        background: "rgba(82,183,136,0.1)",
+                                                                        color: "#2d6a4f",
                                                                         opacity: actionLoading === user.id ? 0.5 : 1,
                                                                     }}>
-                                                                    {user.role === "ADMIN" ? "Demote" : "Promote"}
+                                                                    Promote
+                                                                </button>
+                                                            )}
+                                                            {isMainAdmin && !isCurrentUser && user.role === "ADMIN" && (
+                                                                <button onClick={() => toggleRole(user.id, user.role)}
+                                                                    disabled={actionLoading === user.id}
+                                                                    title="Demote to User"
+                                                                    className="hover:scale-105 active:scale-95 transition-transform"
+                                                                    style={{
+                                                                        padding: "6px 12px", borderRadius: "8px", border: "none", cursor: "pointer",
+                                                                        fontSize: "0.75rem", fontWeight: 600,
+                                                                        background: "rgba(245,158,11,0.1)",
+                                                                        color: "#d97706",
+                                                                        opacity: actionLoading === user.id ? 0.5 : 1,
+                                                                    }}>
+                                                                    Demote
+                                                                </button>
+                                                            )}
+                                                            {!isCurrentUser && (
+                                                                <button onClick={() => toggleSuspension(user.id, user.suspended)}
+                                                                    disabled={actionLoading === user.id}
+                                                                    title={user.suspended ? "Unsuspend User" : "Suspend User"}
+                                                                    className="hover:scale-105 active:scale-95 transition-transform"
+                                                                    style={{
+                                                                        padding: "6px 10px", borderRadius: "8px", border: "none", cursor: "pointer",
+                                                                        background: user.suspended ? "rgba(34,197,94,0.1)" : "rgba(245,158,11,0.1)",
+                                                                        color: user.suspended ? "#16a34a" : "#d97706",
+                                                                        opacity: actionLoading === user.id ? 0.5 : 1,
+                                                                        display: "flex", alignItems: "center", gap: "4px",
+                                                                    }}>
+                                                                    {user.suspended ? <ShieldCheck size={14} /> : <Ban size={14} />}
                                                                 </button>
                                                             )}
                                                             {isMainAdmin && !isCurrentUser && (

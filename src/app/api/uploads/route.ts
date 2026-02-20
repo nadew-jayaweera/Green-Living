@@ -5,17 +5,21 @@ import { prisma } from "@/lib/prisma";
 import { uploadImage } from "@/lib/cloudinary";
 import { checkAndAwardBadges } from "@/lib/badges";
 
-// GET: Fetch uploads (public = approved only, or user's own)
+// GET: Fetch uploads (public = approved only, or user's own = can filter by status)
 export async function GET(request: Request) {
     try {
         const { searchParams } = new URL(request.url);
         const page = parseInt(searchParams.get("page") || "1");
         const limit = parseInt(searchParams.get("limit") || "12");
         const userId = searchParams.get("userId");
+        const status = searchParams.get("status"); // Optional: APPROVED, PENDING, REJECTED
 
-        const where = userId
-            ? { userId }
-            : { status: "APPROVED" };
+        let where: any = userId ? { userId } : { status: "APPROVED" };
+        
+        // If status is specified for user uploads, apply it
+        if (userId && status) {
+            where.status = status;
+        }
 
         const [uploads, total] = await Promise.all([
             prisma.upload.findMany({
@@ -84,11 +88,8 @@ export async function POST(request: Request) {
             },
         });
 
-        // Check and award badges
-        const newBadges = await checkAndAwardBadges(userId);
-
         return NextResponse.json(
-            { message: "Tree uploaded successfully!", upload, newBadges },
+            { message: "Tree uploaded successfully! Awaiting admin approval.", upload },
             { status: 201 }
         );
     } catch (error) {

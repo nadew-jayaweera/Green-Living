@@ -71,6 +71,12 @@ export default function ProfilePage() {
     }, [session, status]);
 
     useEffect(() => {
+        if (status === "unauthenticated") {
+            router.push("/login");
+        }
+    }, [status, router]);
+
+    useEffect(() => {
         setIsHydrated(true);
     }, []);
 
@@ -94,7 +100,7 @@ export default function ProfilePage() {
     }, [selectedImage]);
 
     if (status === "loading") return <div style={{ padding: "100px", textAlign: "center" }}>Loading...</div>;
-    if (!session) { router.push("/login"); return null; }
+    if (!session) return null;
 
     const handleImageChange = (event: React.ChangeEvent<HTMLInputElement>) => {
         const file = event.target.files?.[0] || null;
