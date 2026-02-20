@@ -42,3 +42,9 @@ next-env.d.ts
 
 /src/generated/prisma
 dist/
+
+# database files
+*.db
+*.db-shm
+*.db-wal
+prisma/prisma/
