@@ -35,6 +35,7 @@ export default function Sidebar() {
 
     const navItems = [
         { href: "/", label: "Home", icon: <TreePine size={20} /> },
+        { href: "/feed", label: "Feed", icon: <Image size={20} /> },
         { href: "/upload", label: "Upload", icon: <Upload size={20} /> },
         { href: "/badges", label: "Badges", icon: <Award size={20} /> },
         { href: "/forum", label: "Forum", icon: <MessageCircle size={20} /> },
