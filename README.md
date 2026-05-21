@@ -8,8 +8,9 @@ Green Living is a Next.js web app that helps users share eco-friendly actions, u
 - React 19
 - TypeScript
 - Prisma ORM
-- SQLite (default local database)
+- Supabase Postgres
 - NextAuth (credentials-based authentication)
+- Vercel Blob for image uploads
 - Tailwind CSS
 
 ## Installation Guide
@@ -52,14 +53,13 @@ cp .env.example .env
 If `.env.example` does not exist, create `.env` manually with:
 
 ```env
-DATABASE_URL="file:./prisma/dev.db"
+DATABASE_URL="postgresql://postgres:password@db.your-project.supabase.co:5432/postgres?schema=public"
+DIRECT_URL="postgresql://postgres:password@db.your-project.supabase.co:5432/postgres?schema=public"
 NEXTAUTH_SECRET="replace-with-a-strong-random-secret"
 MAIN_ADMIN_EMAIL="admin@example.com"
 
-# Optional (required only for image uploads to Cloudinary)
-CLOUDINARY_CLOUD_NAME=""
-CLOUDINARY_API_KEY=""
-CLOUDINARY_API_SECRET=""
+# Required for Vercel Blob uploads
+BLOB_READ_WRITE_TOKEN=""
 ```
 
 ### 5) Set up the database
@@ -133,10 +133,12 @@ cp .env.example .env   # or create .env manually if the file is missing
 Edit `.env` and set production values. At minimum:
 
 ```env
-DATABASE_URL="file:./prisma/dev.db"
+DATABASE_URL="postgresql://postgres:password@db.your-project.supabase.co:5432/postgres?schema=public"
+DIRECT_URL="postgresql://postgres:password@db.your-project.supabase.co:5432/postgres?schema=public"
 NEXTAUTH_SECRET="your-very-long-random-secret"
 MAIN_ADMIN_EMAIL="admin@yourmail.com"
 NEXTAUTH_URL="http://YOUR_SERVER_IP"
+BLOB_READ_WRITE_TOKEN="your-vercel-blob-token"
 ```
 
 Then build and prepare DB:

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { uploadImage } from "@/lib/cloudinary";
+import { uploadImage } from "@/lib/blob";
 
 export async function POST(request: Request) {
     try {
@@ -41,13 +41,13 @@ export async function POST(request: Request) {
 
             try {
                 const buffer = Buffer.from(await file.arrayBuffer());
-                const uploadedUrl = await uploadImage(buffer, "green-living/avatars");
+                const uploadedUrl = await uploadImage(buffer, "green-living/avatars", file.name, file.type);
                 console.log("Image uploaded successfully to:", uploadedUrl);
                 updateData.image = uploadedUrl;
             } catch (uploadError) {
-                console.error("Cloudinary upload error:", uploadError);
+                console.error("Blob upload error:", uploadError);
                 return NextResponse.json(
-                    { error: "Failed to upload image to cloud storage" },
+                    { error: "Failed to upload image to blob storage" },
                     { status: 500 }
                 );
             }

@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
-import { uploadImage } from "@/lib/cloudinary";
+import { uploadImage } from "@/lib/blob";
 import { checkAndAwardBadges } from "@/lib/badges";
 
 // GET: Fetch uploads (public = approved only, or user's own = can filter by status)
@@ -72,7 +72,7 @@ export async function POST(request: Request) {
 
         // Upload image
         const buffer = Buffer.from(await file.arrayBuffer());
-        const imageUrl = await uploadImage(buffer);
+        const imageUrl = await uploadImage(buffer, "green-living", file.name, file.type);
 
         const userId = (session.user as { id: string }).id;
 
