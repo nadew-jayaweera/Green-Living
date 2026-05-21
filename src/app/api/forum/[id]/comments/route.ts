@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { firestore } from "@/lib/firebase-admin";
+import { randomUUID } from "node:crypto";
 
 // POST: Add a comment to a forum post
 export async function POST(
@@ -25,14 +26,41 @@ export async function POST(
         // Sanitize
         const sanitizedContent = content.trim().slice(0, 2000);
 
-        const comment = await prisma.comment.create({
-            data: { userId, postId, content: sanitizedContent },
-            include: {
-                user: { select: { id: true, name: true, image: true } },
-            },
+        const postSnapshot = await firestore.collection("forumPosts").doc(postId).get();
+        if (!postSnapshot.exists) {
+            return NextResponse.json({ error: "Post not found" }, { status: 404 });
+        }
+
+        const commentId = randomUUID();
+        const comment = {
+            id: commentId,
+            userId,
+            postId,
+            content: sanitizedContent,
+            createdAt: new Date().toISOString(),
+        };
+
+        await firestore.collection("comments").doc(commentId).set({
+            userId,
+            postId,
+            content: sanitizedContent,
+            createdAt: comment.createdAt,
         });
 
-        return NextResponse.json(comment, { status: 201 });
+        const userSnapshot = await firestore.collection("users").doc(userId).get();
+        const userData = userSnapshot.data() as { name?: string; image?: string } | undefined;
+
+        return NextResponse.json(
+            {
+                ...comment,
+                user: {
+                    id: userId,
+                    name: userData?.name ?? "Unknown",
+                    image: userData?.image ?? null,
+                },
+            },
+            { status: 201 }
+        );
     } catch (error) {
         console.error("Error creating comment:", error);
         return NextResponse.json({ error: "Failed to create comment" }, { status: 500 });

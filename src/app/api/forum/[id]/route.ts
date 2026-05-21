@@ -1,7 +1,40 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { firestore, Timestamp } from "@/lib/firebase-admin";
+
+function toMillis(value: unknown): number {
+    if (!value) return 0;
+    if (typeof value === "string") {
+        const ms = new Date(value).getTime();
+        return Number.isNaN(ms) ? 0 : ms;
+    }
+    if (value instanceof Date) return value.getTime();
+    if (value instanceof Timestamp) return value.toDate().getTime();
+    if (typeof value === "object" && value && "toDate" in (value as object)) {
+        try {
+            return ((value as { toDate: () => Date }).toDate()).getTime();
+        } catch {
+            return 0;
+        }
+    }
+    return 0;
+}
+
+function toIsoString(value: unknown): string | null {
+    if (!value) return null;
+    if (typeof value === "string") return value;
+    if (value instanceof Date) return value.toISOString();
+    if (value instanceof Timestamp) return value.toDate().toISOString();
+    if (typeof value === "object" && value && "toDate" in (value as object)) {
+        try {
+            return ((value as { toDate: () => Date }).toDate()).toISOString();
+        } catch {
+            return null;
+        }
+    }
+    return null;
+}
 
 // GET: Fetch a single forum post with comments
 export async function GET(
@@ -13,28 +46,62 @@ export async function GET(
         const session = await getServerSession(authOptions);
         const userId = (session?.user as { id?: string })?.id;
 
-        const post = await prisma.forumPost.findUnique({
-            where: { id },
-            include: {
-                user: { select: { id: true, name: true, image: true } },
-                comments: {
-                    include: {
-                        user: { select: { id: true, name: true, image: true } },
-                    },
-                    orderBy: { createdAt: "asc" },
-                },
-                likes: true,
-                _count: { select: { comments: true, likes: true } },
-            },
-        });
-
-        if (!post) {
+        const postSnapshot = await firestore.collection("forumPosts").doc(id).get();
+        if (!postSnapshot.exists) {
             return NextResponse.json({ error: "Post not found" }, { status: 404 });
         }
 
-        const isLiked = userId ? post.likes.some((like) => like.userId === userId) : false;
+        const postData = postSnapshot.data() as { userId: string; createdAt?: unknown };
 
-        return NextResponse.json({ ...post, isLiked, likes: undefined });
+        const [postUserSnapshot, commentsSnapshot, likesSnapshot] = await Promise.all([
+            firestore.collection("users").doc(postData.userId).get(),
+            firestore.collection("comments").where("postId", "==", id).get(),
+            firestore.collection("likes").where("postId", "==", id).get(),
+        ]);
+
+        const comments = await Promise.all(
+            commentsSnapshot.docs.map(async (doc) => {
+                const data = doc.data() as { userId: string; createdAt?: unknown };
+                const commentUserSnapshot = await firestore.collection("users").doc(data.userId).get();
+                const commentUser = commentUserSnapshot.data() as { name?: string; image?: string } | undefined;
+                return {
+                    id: doc.id,
+                    ...data,
+                    createdAt: toIsoString(data.createdAt),
+                    user: {
+                        id: data.userId,
+                        name: commentUser?.name ?? "Unknown",
+                        image: commentUser?.image ?? null,
+                    },
+                };
+            })
+        );
+
+        comments.sort((a, b) => toMillis(a.createdAt) - toMillis(b.createdAt));
+
+        const likes = likesSnapshot.docs.map((doc) => ({ id: doc.id, ...(doc.data() as { userId: string }) }));
+        const isLiked = userId ? likes.some((like) => like.userId === userId) : false;
+
+        const postUser = postUserSnapshot.data() as { name?: string; image?: string } | undefined;
+
+        const post = {
+            id: postSnapshot.id,
+            ...(postSnapshot.data() as Record<string, unknown>),
+            createdAt: toIsoString(postData.createdAt),
+            user: {
+                id: postData.userId,
+                name: postUser?.name ?? "Unknown",
+                image: postUser?.image ?? null,
+            },
+            comments,
+            _count: {
+                comments: comments.length,
+                likes: likes.length,
+            },
+            isLiked,
+        };
+
+        return NextResponse.json(post);
     } catch (error) {
         console.error("Error fetching post:", error);
         return NextResponse.json({ error: "Failed to fetch post" }, { status: 500 });
@@ -56,16 +123,29 @@ export async function DELETE(
         const userId = (session.user as { id: string }).id;
         const userRole = (session.user as { role: string }).role;
 
-        const post = await prisma.forumPost.findUnique({ where: { id } });
-        if (!post) {
+        const postRef = firestore.collection("forumPosts").doc(id);
+        const postSnapshot = await postRef.get();
+        if (!postSnapshot.exists) {
             return NextResponse.json({ error: "Post not found" }, { status: 404 });
         }
+
+        const post = postSnapshot.data() as { userId: string };
 
         if (post.userId !== userId && userRole !== "ADMIN") {
             return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
-        await prisma.forumPost.delete({ where: { id } });
+        const [commentsSnapshot, likesSnapshot] = await Promise.all([
+            firestore.collection("comments").where("postId", "==", id).get(),
+            firestore.collection("likes").where("postId", "==", id).get(),
+        ]);
+
+        const batch = firestore.batch();
+        commentsSnapshot.docs.forEach((doc) => batch.delete(doc.ref));
+        likesSnapshot.docs.forEach((doc) => batch.delete(doc.ref));
+        batch.delete(postRef);
+        await batch.commit();
+
         return NextResponse.json({ message: "Post deleted" });
     } catch (error) {
         console.error("Error deleting post:", error);

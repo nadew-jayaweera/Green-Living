@@ -1,7 +1,7 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { firestore } from "@/lib/firebase-admin";
 import { uploadImage } from "@/lib/cloudinary";
 
 export async function POST(request: Request) {
@@ -59,12 +59,23 @@ export async function POST(request: Request) {
 
         const userId = (session.user as { id: string }).id;
         console.log("Updating user", userId, "with data:", { hasName: !!updateData.name, hasImage: !!updateData.image, imageSizeKB: updateData.image ? (updateData.image.length / 1024).toFixed(2) : 0 });
-        
-        const user = await prisma.user.update({
-            where: { id: userId },
-            data: updateData,
-            select: { id: true, name: true, email: true, image: true },
-        });
+
+        const userRef = firestore.collection("users").doc(userId);
+        const userSnap = await userRef.get();
+        if (!userSnap.exists) {
+            return NextResponse.json({ error: "User not found" }, { status: 404 });
+        }
+
+        await userRef.set(updateData, { merge: true });
+        const updated = await userRef.get();
+        const userData = updated.data() as { name?: string; email?: string; image?: string } | undefined;
+
+        const user = {
+            id: updated.id,
+            name: userData?.name,
+            email: userData?.email,
+            image: userData?.image,
+        };
 
         console.log("User updated successfully:", { id: user.id, name: user.name, hasImage: !!user.image });
 

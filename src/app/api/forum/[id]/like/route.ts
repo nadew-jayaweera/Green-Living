@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import { authOptions } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
+import { firestore } from "@/lib/firebase-admin";
+import { randomUUID } from "node:crypto";
 
 // POST: Toggle like on a forum post
 export async function POST(
@@ -17,18 +18,30 @@ export async function POST(
 
         const userId = (session.user as { id: string }).id;
 
-        // Check if already liked
-        const existingLike = await prisma.like.findUnique({
-            where: { userId_postId: { userId, postId } },
-        });
+        const postSnapshot = await firestore.collection("forumPosts").doc(postId).get();
+        if (!postSnapshot.exists) {
+            return NextResponse.json({ error: "Post not found" }, { status: 404 });
+        }
 
-        if (existingLike) {
+        // Check if already liked
+        const existingLike = await firestore
+            .collection("likes")
+            .where("userId", "==", userId)
+            .where("postId", "==", postId)
+            .limit(1)
+            .get();
+
+        if (!existingLike.empty) {
             // Unlike
-            await prisma.like.delete({ where: { id: existingLike.id } });
+            await firestore.collection("likes").doc(existingLike.docs[0].id).delete();
             return NextResponse.json({ liked: false });
         } else {
             // Like
-            await prisma.like.create({ data: { userId, postId } });
+            await firestore.collection("likes").doc(randomUUID()).set({
+                userId,
+                postId,
+                createdAt: new Date().toISOString(),
+            });
             return NextResponse.json({ liked: true });
         }
     } catch (error) {

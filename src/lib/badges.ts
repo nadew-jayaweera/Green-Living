@@ -1,4 +1,5 @@
-import { prisma } from "@/lib/prisma";
+import { firestore } from "@/lib/firebase-admin";
+import { randomUUID } from "node:crypto";
 
 // Badge milestone definitions
 const BADGE_MILESTONES = [
@@ -17,42 +18,65 @@ export { BADGE_MILESTONES };
  */
 export async function checkAndAwardBadges(userId: string): Promise<string[]> {
     // Count user's approved uploads
-    const treeCount = await prisma.upload.count({
-        where: { userId, status: "APPROVED" },
-    });
+    const uploadsSnapshot = await firestore
+        .collection("uploads")
+        .where("userId", "==", userId)
+        .where("status", "==", "APPROVED")
+        .get();
+    const treeCount = uploadsSnapshot.size;
 
     // Get badges user already has
-    const existingBadges = await prisma.userBadge.findMany({
-        where: { userId },
-        include: { badge: true },
-    });
+    const existingUserBadges = await firestore
+        .collection("userBadges")
+        .where("userId", "==", userId)
+        .get();
+    const existingBadgeIds = new Set(
+        existingUserBadges.docs
+            .map((doc) => doc.data().badgeId)
+            .filter((badgeId): badgeId is string => typeof badgeId === "string")
+    );
 
-    const existingBadgeNames = existingBadges.map((ub) => ub.badge.name);
+    const allBadgesSnapshot = await firestore.collection("badges").get();
+    const badgesByName = new Map(
+        allBadgesSnapshot.docs.map((doc) => {
+            const data = doc.data() as { name?: string };
+            return [data.name ?? "", { id: doc.id, ...data }];
+        })
+    );
     const newBadges: string[] = [];
 
     // Check each milestone
     for (const milestone of BADGE_MILESTONES) {
-        if (treeCount >= milestone.threshold && !existingBadgeNames.includes(milestone.name)) {
+        if (treeCount >= milestone.threshold) {
             // Find or create the badge
-            let badge = await prisma.badge.findUnique({
-                where: { name: milestone.name },
-            });
+            let badge = badgesByName.get(milestone.name) as
+                | { id: string; name?: string }
+                | undefined;
 
             if (!badge) {
-                badge = await prisma.badge.create({
-                    data: {
-                        name: milestone.name,
-                        icon: milestone.icon,
-                        description: milestone.description,
-                        threshold: milestone.threshold,
-                    },
+                const badgeId = randomUUID();
+                await firestore.collection("badges").doc(badgeId).set({
+                    name: milestone.name,
+                    icon: milestone.icon,
+                    description: milestone.description,
+                    threshold: milestone.threshold,
                 });
+                badge = { id: badgeId, name: milestone.name };
+                badgesByName.set(milestone.name, badge);
+            }
+
+            if (existingBadgeIds.has(badge.id)) {
+                continue;
             }
 
             // Award badge to user
-            await prisma.userBadge.create({
-                data: { userId, badgeId: badge.id },
+            await firestore.collection("userBadges").doc(randomUUID()).set({
+                userId,
+                badgeId: badge.id,
+                earnedAt: new Date().toISOString(),
             });
+
+            existingBadgeIds.add(badge.id);
 
             newBadges.push(milestone.name);
         }

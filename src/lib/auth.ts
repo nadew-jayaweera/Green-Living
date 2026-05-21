@@ -1,6 +1,6 @@
 import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
-import { prisma } from "@/lib/prisma";
+import { firestore } from "@/lib/firebase-admin";
 import bcrypt from "bcryptjs";
 
 export const authOptions: NextAuthOptions = {
@@ -16,12 +16,29 @@ export const authOptions: NextAuthOptions = {
                     throw new Error("Please provide email and password");
                 }
 
-                const user = await prisma.user.findUnique({
-                    where: { email: credentials.email },
-                });
+                const userSnapshot = await firestore
+                    .collection("users")
+                    .where("email", "==", credentials.email)
+                    .limit(1)
+                    .get();
+
+                const user = userSnapshot.empty
+                    ? null
+                    : ({ id: userSnapshot.docs[0].id, ...userSnapshot.docs[0].data() } as {
+                        id: string;
+                        email: string;
+                        name: string;
+                        image?: string;
+                        role?: string;
+                        password?: string;
+                    });
 
                 if (!user) {
                     throw new Error("No account found with this email");
+                }
+
+                if (!user.password) {
+                    throw new Error("This account has no password set. Please reset your password.");
                 }
 
                 const isPasswordValid = await bcrypt.compare(
@@ -38,7 +55,7 @@ export const authOptions: NextAuthOptions = {
                     email: user.email,
                     name: user.name,
                     image: user.image,
-                    role: user.role,
+                    role: user.role ?? "USER",
                 };
             },
         }),
