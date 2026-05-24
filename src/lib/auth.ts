@@ -2,6 +2,21 @@ import { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { prisma } from "@/lib/prisma";
 import bcrypt from "bcryptjs";
+import crypto from "crypto";
+
+function resolveAuthSecret() {
+    const configuredSecret = process.env.NEXTAUTH_SECRET || process.env.AUTH_SECRET;
+    if (configuredSecret) return configuredSecret;
+
+    const fallbackSource = [process.env.DATABASE_URL, process.env.NEXTAUTH_URL, process.env.MAIN_ADMIN_EMAIL]
+        .filter(Boolean)
+        .join("|");
+
+    return crypto
+        .createHash("sha256")
+        .update(`green-living-nextauth:${fallbackSource}`)
+        .digest("hex");
+}
 
 export const authOptions: NextAuthOptions = {
     providers: [
@@ -81,5 +96,5 @@ export const authOptions: NextAuthOptions = {
     pages: {
         signIn: "/login",
     },
-    secret: process.env.NEXTAUTH_SECRET,
+    secret: resolveAuthSecret(),
 };

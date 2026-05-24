@@ -144,11 +144,10 @@ BLOB_READ_WRITE_TOKEN="your-vercel-blob-token"
 Then build and prepare DB:
 
 ```bash
-npx prisma migrate deploy
 npm run build
 ```
 
-`npm run build` runs the Prisma migration and seed flow before the Next.js build, which is what keeps the deployed site connected to the populated production database.
+`npm run build` now only generates Prisma Client and builds the app. The first request to `/api/stats` will create the bootstrap admin user if the database is still empty.
 
 #### 3) Run the app with PM2 on port 3000
 

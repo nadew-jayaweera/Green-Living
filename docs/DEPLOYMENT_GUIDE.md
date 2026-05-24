@@ -74,12 +74,11 @@ CLOUDINARY_API_SECRET=""
 Prepare DB and build:
 
 ```bash
-npx prisma migrate deploy
 npm run build
 ```
 
-The default `build` script now runs Prisma generate, migrations, seed data, and the Next.js production build in one step. That keeps Vercel deployments pointed at the same database and ensures the admin user is created in production.
-
+The default `build` script now only runs Prisma generate and the Next.js production build. The first request to `/api/stats` creates the bootstrap admin user if the database is empty, which avoids a long Vercel build step.
+ 
 ---
 
 ## 3) Run app with PM2 (IP access phase)

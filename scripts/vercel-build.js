@@ -40,8 +40,6 @@ if (!process.env.DATABASE_URL) {
 
 const commands = [
     'npx prisma generate',
-    'npx prisma migrate deploy',
-    'node prisma/seed.js',
     'next build',
 ];
 
