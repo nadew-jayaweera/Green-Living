@@ -148,6 +148,8 @@ npx prisma migrate deploy
 npm run build
 ```
 
+`npm run build` runs the Prisma migration and seed flow before the Next.js build, which is what keeps the deployed site connected to the populated production database.
+
 #### 3) Run the app with PM2 on port 3000
 
 ```bash

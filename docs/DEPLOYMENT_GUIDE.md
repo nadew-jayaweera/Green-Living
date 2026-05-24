@@ -60,7 +60,7 @@ cp .env.example .env
 If no `.env.example`, create `.env` manually:
 
 ```env
-DATABASE_URL="file:./prisma/dev.db"
+DATABASE_URL="postgresql://postgres:password@db.your-project.supabase.co:5432/postgres?schema=public"
 NEXTAUTH_SECRET="put-a-long-random-secret-here"
 MAIN_ADMIN_EMAIL="admin@yourmail.com"
 NEXTAUTH_URL="http://YOUR_SERVER_IP"
@@ -77,6 +77,8 @@ Prepare DB and build:
 npx prisma migrate deploy
 npm run build
 ```
+
+The default `build` script now runs Prisma generate, migrations, seed data, and the Next.js production build in one step. That keeps Vercel deployments pointed at the same database and ensures the admin user is created in production.
 
 ---
 
